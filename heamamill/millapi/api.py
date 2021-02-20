@@ -1,14 +1,17 @@
 from .models import Mustard, Container, Employee, EmpPayment, OtherExpense, Oil, MustardCake
 from rest_framework import viewsets, permissions
 from .serializers import MustardSerializer, ContainerSerializer, EmployeeSerializer, EmpPaymentSerializer, OtherExpenseSerializer, OilSerializer, MustardCakeSerializer
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 # Mustard Viewset
 
 
 class MustardViewSet(viewsets.ModelViewSet):
     queryset = Mustard.objects.all()
+    authentication_classes = [JWTAuthentication]
     permission_classes = [
-        permissions.AllowAny
+        IsAuthenticated
     ]
     serializer_class = MustardSerializer
 
@@ -17,8 +20,9 @@ class MustardViewSet(viewsets.ModelViewSet):
 
 class ContainerViewSet(viewsets.ModelViewSet):
     queryset = Container.objects.all()
+    authentication_classes = [JWTAuthentication]
     permission_classes = [
-        permissions.AllowAny
+        IsAuthenticated
     ]
     serializer_class = ContainerSerializer
 
@@ -27,8 +31,9 @@ class ContainerViewSet(viewsets.ModelViewSet):
 
 class EmployeeViewSet(viewsets.ModelViewSet):
     queryset = Employee.objects.all()
+    authentication_classes = [JWTAuthentication]
     permission_classes = [
-        permissions.AllowAny
+        IsAuthenticated
     ]
     serializer_class = EmployeeSerializer
 
@@ -37,8 +42,9 @@ class EmployeeViewSet(viewsets.ModelViewSet):
 
 class EmpPaymentViewSet(viewsets.ModelViewSet):
     queryset = EmpPayment.objects.all()
+    authentication_classes = [JWTAuthentication]
     permission_classes = [
-        permissions.AllowAny
+        IsAuthenticated
     ]
     serializer_class = EmpPaymentSerializer
 
@@ -47,8 +53,9 @@ class EmpPaymentViewSet(viewsets.ModelViewSet):
 
 class OtherExpenseViewSet(viewsets.ModelViewSet):
     queryset = OtherExpense.objects.all()
+    authentication_classes = [JWTAuthentication]
     permission_classes = [
-        permissions.AllowAny
+        IsAuthenticated
     ]
     serializer_class = OtherExpenseSerializer
 
@@ -57,8 +64,9 @@ class OtherExpenseViewSet(viewsets.ModelViewSet):
 
 class OilViewSet(viewsets.ModelViewSet):
     queryset = Oil.objects.all()
+    authentication_classes = [JWTAuthentication]
     permission_classes = [
-        permissions.AllowAny
+        IsAuthenticated
     ]
     serializer_class = OilSerializer
 
@@ -67,7 +75,8 @@ class OilViewSet(viewsets.ModelViewSet):
 
 class MustardCakeViewSet(viewsets.ModelViewSet):
     queryset = MustardCake.objects.all()
+    authentication_classes = [JWTAuthentication]
     permission_classes = [
-        permissions.AllowAny
+        IsAuthenticated
     ]
     serializer_class = MustardCakeSerializer

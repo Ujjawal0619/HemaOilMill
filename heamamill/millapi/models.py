@@ -14,6 +14,9 @@ class Mustard(models.Model):
     address = models.CharField(max_length=200, blank=True)
     desc = models.CharField(max_length=300, blank=True)
 
+    def __str__(self):
+        return self.name
+
 
 class Container(models.Model):
     date = models.DateTimeField(auto_now_add=True)
@@ -30,6 +33,9 @@ class Container(models.Model):
     desc = models.CharField(max_length=300, blank=True,
                             default='No Descriptions')
 
+    def __str__(self):
+        return self.containerType
+
 
 class Employee(models.Model):
     # empPayment = models.ForeignKey(EmpPayment, on_delete=models.CASCADE)
@@ -41,12 +47,18 @@ class Employee(models.Model):
     address = models.CharField(
         max_length=200, blank=True, default='Not Available')
 
+    def __str__(self):
+        return self.name
+
 
 class EmpPayment(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
     amount = models.DecimalField(
         max_digits=6, decimal_places=2, default=0.00)
+
+    def __str__(self):
+        return self.amount
 
 
 class OtherExpense(models.Model):
@@ -55,6 +67,9 @@ class OtherExpense(models.Model):
         max_digits=6, decimal_places=2, default=0.00)
     # Electricity, Machinary, Jute Bags etc.
     expenseType = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.expenseType
 
     # Income
 
@@ -72,6 +87,9 @@ class Oil(models.Model):
     address = models.CharField(max_length=200, blank=True)
     desc = models.CharField(max_length=300, blank=True)
 
+    def __str__(self):
+        return self.name
+
 
 class MustardCake(models.Model):
     date = models.DateTimeField(auto_now_add=True)
@@ -83,3 +101,6 @@ class MustardCake(models.Model):
         max_digits=6, decimal_places=2, default=0.00)
     address = models.CharField(max_length=200, blank=True)
     desc = models.CharField(max_length=300, blank=True)
+
+    def __str__(self):
+        return self.name

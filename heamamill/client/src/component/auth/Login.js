@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useState, useContext, useEffect } from 'react';
+// import AlertContext from '../../context/alert/alertContext';
+import AuthContext from '../../context/auth/authContext';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -12,6 +14,8 @@ import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
+import Bg from './login_bg.jpg';
+import { Route, Redirect } from 'react-router-dom';
 
 function Copyright() {
   return (
@@ -31,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
     height: '100vh',
   },
   image: {
-    backgroundImage: 'url(https://source.unsplash.com/random/brassica)',
+    backgroundImage: `url(${Bg})`,
     backgroundRepeat: 'no-repeat',
     backgroundColor:
       theme.palette.type === 'light'
@@ -59,8 +63,45 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Login() {
+export default function Login(props) {
   const classes = useStyles();
+  const [user, setUser] = useState({
+    username: '',
+    password: '',
+  });
+
+  const { username, password } = user;
+  const authContext = useContext(AuthContext);
+  const { login, error, isAuthenticated } = authContext;
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      // This will redirect to dashboard
+      props.history.push('/');
+    }
+
+    if (error === 'Invalid Credentials user not exist') {
+      // setAlert(error, 'danger');
+      // clearErrors();
+    }
+  }, [error, isAuthenticated, props.history]);
+
+  const onChange = (e) => {
+    setUser({ ...user, [e.target.name]: e.target.value });
+  };
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    if (username === '' || password === '') {
+      console.log('username, password error during login');
+      // setAlert('Please fill all fields', 'danger');
+    } else {
+      login({
+        username,
+        password,
+      });
+    }
+  };
 
   return (
     <Grid container component='main' className={classes.root}>
@@ -82,8 +123,9 @@ export default function Login() {
               fullWidth
               id='email'
               label='Email Address'
-              name='email'
+              name='username'
               autoComplete='email'
+              onChange={onChange}
               autoFocus
             />
             <TextField
@@ -95,6 +137,7 @@ export default function Login() {
               label='Password'
               type='password'
               id='password'
+              onChange={onChange}
               autoComplete='current-password'
             />
             <FormControlLabel
@@ -107,6 +150,7 @@ export default function Login() {
               variant='contained'
               color='primary'
               className={classes.submit}
+              onClick={onSubmit}
             >
               Sign In
             </Button>

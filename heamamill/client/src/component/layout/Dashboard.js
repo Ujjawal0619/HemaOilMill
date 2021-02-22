@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useEffect, useReducer } from 'react';
 import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -14,6 +14,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+import AuthContext from '../../context/auth/authContext';
 
 import * as RiIcons from 'react-icons/ri';
 import * as HiIcons from 'react-icons/hi';
@@ -61,6 +62,13 @@ function Dashboard(props) {
   const classes = useStyles();
   const theme = useTheme();
   const [mobileOpen, setMobileOpen] = React.useState(false);
+  const authContext = useContext(AuthContext);
+  const { logout } = authContext;
+
+  useEffect(() => {
+    authContext.loadUser();
+    // eslint-disable-next-line
+  }, []);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -139,7 +147,7 @@ function Dashboard(props) {
       </List>
       <Divider />
       <List style={{ color: '#fff', background: '#757575' }}>
-        <ListItem button>
+        <ListItem button onClick={logout}>
           <ListItemIcon>
             <BiIcons.BiLogOutCircle size='25px' style={{ color: '#fff' }} />
           </ListItemIcon>

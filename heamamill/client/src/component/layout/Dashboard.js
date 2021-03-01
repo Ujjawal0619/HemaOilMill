@@ -1,26 +1,20 @@
-import React, { useContext, useEffect, useReducer } from 'react';
+import React, { useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
 import IconButton from '@material-ui/core/IconButton';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
 import MenuIcon from '@material-ui/icons/Menu';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import AuthContext from '../../context/auth/authContext';
+import CenteredGrid from '../recordPannel/CenteredGrid';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import DrawerItems from './DrawerItems';
 
-import * as RiIcons from 'react-icons/ri';
-import * as HiIcons from 'react-icons/hi';
 import * as BsIcons from 'react-icons/bs';
-import * as GiIcons from 'react-icons/gi';
-import * as BiIcons from 'react-icons/bi';
 
 const drawerWidth = 240;
 
@@ -47,7 +41,6 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   // necessary for content to be below app bar
-  toolbar: theme.mixins.toolbar,
   drawerPaper: {
     width: drawerWidth,
   },
@@ -63,7 +56,6 @@ function Dashboard(props) {
   const theme = useTheme();
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const authContext = useContext(AuthContext);
-  const { logout } = authContext;
 
   useEffect(() => {
     authContext.loadUser();
@@ -74,101 +66,18 @@ function Dashboard(props) {
     setMobileOpen(!mobileOpen);
   };
 
-  // Side Bar Menue
-  const drawer = (
-    <div>
-      <div className={classes.toolbar} />
-      <Divider />
-      <List>
-        <ListItem button>
-          <ListItemIcon>
-            <GiIcons.GiGrain size='25px' />
-          </ListItemIcon>
-          <ListItemText primary='Mustard' />
-        </ListItem>
-      </List>
-      <Divider />
-      <List>
-        <ListItem button>
-          <ListItemIcon>
-            <BsIcons.BsDropletHalf size='25px' />
-          </ListItemIcon>
-          <ListItemText primary='Oil' />
-        </ListItem>
-      </List>
-      <Divider />
-      <List>
-        <ListItem button>
-          <ListItemIcon>
-            <BiIcons.BiCylinder size='25px' />
-          </ListItemIcon>
-          <ListItemText primary='Containers' />
-        </ListItem>
-      </List>
-      <Divider />
-      <List>
-        <ListItem button>
-          <ListItemIcon>
-            <BsIcons.BsPeopleFill size='25px' />
-          </ListItemIcon>
-          <ListItemText primary='Employees' />
-        </ListItem>
-      </List>
-      <Divider />
-      <List>
-        <ListItem button>
-          <ListItemIcon>
-            <HiIcons.HiCurrencyRupee size='25px' />
-          </ListItemIcon>
-          <ListItemText primary='Payments' />
-        </ListItem>
-      </List>
-      <Divider />
-      <List>
-        <ListItem
-          button
-          component='a'
-          href='https://sad-pare-32acee.netlify.app/'
-        >
-          <ListItemIcon>
-            <GiIcons.GiCow size='25px' />
-          </ListItemIcon>
-          <ListItemText primary='Cake' />
-        </ListItem>
-      </List>
-      <Divider />
-      <List>
-        <ListItem button>
-          <ListItemIcon>
-            <RiIcons.RiBillFill size='25px' />
-          </ListItemIcon>
-          <ListItemText primary='Other' />
-        </ListItem>
-      </List>
-      <Divider />
-      <List style={{ color: '#fff', background: '#757575' }}>
-        <ListItem button onClick={logout}>
-          <ListItemIcon>
-            <BiIcons.BiLogOutCircle size='25px' style={{ color: '#fff' }} />
-          </ListItemIcon>
-          <ListItemText primary='Logout' />
-        </ListItem>
-      </List>
-      <Divider />
-    </div>
-  );
+  // Side Bar
 
   const container =
     window !== undefined ? () => window().document.body : undefined;
+  const fullHeader = useMediaQuery('(min-width:600px)')
+    ? { zIndex: '1300', width: '100vw' }
+    : {};
 
   return (
     <div className={classes.root}>
       <CssBaseline />
-      <AppBar
-        position='fixed'
-        className={classes.appBar}
-        style={{ zIndex: '1300', width: '100vw' }}
-      >
+      <AppBar position='fixed' className={classes.appBar} style={fullHeader}>
         <Toolbar>
           <IconButton
             color='inherit'
@@ -181,7 +90,7 @@ function Dashboard(props) {
           </IconButton>
           <Typography variant='h4' noWrap style={{ margin: '0 auto' }}>
             <BsIcons.BsDropletHalf style={{ marginRight: '1rem' }} />
-            Hema Oil Mill
+            <strong> HEMA OIL MILL</strong>
           </Typography>
         </Toolbar>
       </AppBar>
@@ -201,7 +110,7 @@ function Dashboard(props) {
               keepMounted: true, // Better open performance on mobile.
             }}
           >
-            {drawer}
+            <DrawerItems />
           </Drawer>
         </Hidden>
         <Hidden xsDown implementation='css'>
@@ -212,14 +121,15 @@ function Dashboard(props) {
             variant='permanent'
             open
           >
-            {drawer}
+            <DrawerItems />
           </Drawer>
         </Hidden>
       </nav>
+
+      {/* Data showcase */}
+
       <main className={classes.content}>
-        {/* <div className={classes.toolbar} /> */}
-        <div className=''>{/* Form filling */}</div>
-        <div className=''>{/* Data Listing */}</div>
+        <CenteredGrid />
       </main>
     </div>
   );

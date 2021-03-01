@@ -38,3 +38,29 @@ if you are using vs code make sure to select interpreter which has project name.
    serializer:
    view:
    routers:
+
+// required state //
+
+Mustard: (type: mustard)
+date, name, mobile, quantity, rate, transport, address, desc,
+
+Container: (type:containers)
+date, name, mobile, rate, transport, quantity, containerType, address, desc,
+
+Employee: (type:employees)
+joining, name, mobile, photo, identity, address
+
+EmpPayment: (type:payments)
+employee, date, amount
+
+OtherExpense: (type:other)
+date, amount, expenseType
+
+Oil: (type: oil)
+name, date, mobile, containerType, quantity, rate, transport, address, desc
+
+MustardCake: (type:cake)
+date, name, mobile, quantity, rate, transport, address, desc
+
+Dues: (type:dues)
+name, ...

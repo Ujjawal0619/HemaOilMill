@@ -3,11 +3,12 @@ from .api import MustardViewSet, ContainerViewSet, EmployeeViewSet, EmpPaymentVi
 
 router = routers.DefaultRouter()
 router.register('api/mustard', MustardViewSet, 'mustard')
-router.register('api/container', ContainerViewSet, 'container')
-router.register('api/employee', EmployeeViewSet, 'employee')
-router.register('api/emppayment', EmpPaymentViewSet, 'emppayment')
-router.register('api/otherexpense', OtherExpenseViewSet, 'otherexpense')
+router.register('api/containers', ContainerViewSet, 'containers')
+router.register('api/employees', EmployeeViewSet, 'employees')
+router.register('api/payments', EmpPaymentViewSet, 'payments')
+router.register('api/other', OtherExpenseViewSet, 'other')
 router.register('api/oil', OilViewSet, 'oil')
-router.register('api/mustardcake', MustardCakeViewSet, 'mustardcake')
+router.register('api/cake', MustardCakeViewSet, 'cake')
+router.register('api/dues', MustardCakeViewSet, 'dues')
 
 urlpatterns = router.urls

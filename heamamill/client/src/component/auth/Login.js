@@ -21,7 +21,7 @@ function Copyright() {
   return (
     <Typography variant='body2' color='textSecondary' align='center'>
       {'Copyright © '}
-      <Link color='inherit' href='https://sad-pare-32acee.netlify.app/'>
+      <Link color='inherit' href='https://mauryadev.netlify.app/index.html'>
         UK Dev
       </Link>{' '}
       {new Date().getFullYear()}
@@ -112,7 +112,10 @@ export default function Login(props) {
           <Avatar className={classes.avatar}>
             <LockOutlinedIcon />
           </Avatar>
-          <Typography component='h1' variant='h5'>
+          <Typography component='h1' variant='h5' style={{ color: '#3f51b5' }}>
+            <strong>Hema Oil Mill</strong>
+          </Typography>
+          <Typography component='h1' variant='h6'>
             Sign in
           </Typography>
           <form className={classes.form} noValidate>
@@ -162,7 +165,7 @@ export default function Login(props) {
               </Grid>
               <Grid item>
                 <Link
-                  href='https://sad-pare-32acee.netlify.app/contact.html'
+                  href='https://mauryadev.netlify.app/contact.html'
                   variant='body2'
                 >
                   {"Don't have an account? Contact UK Dev"}

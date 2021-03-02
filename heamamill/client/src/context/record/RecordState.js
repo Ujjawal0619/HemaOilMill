@@ -33,7 +33,7 @@ const RecordState = (props) => {
       );
       const res = await axios.get(`/api/${type}`);
       console.log(res.data);
-      dispatch({ type: LOAD_RECORD, payload: type });
+      dispatch({ type: LOAD_RECORD, payload: res.data });
     } catch (err) {
       console.log(err.response.data);
     }

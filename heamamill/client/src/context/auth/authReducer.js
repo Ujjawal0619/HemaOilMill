@@ -17,12 +17,12 @@ export default (state, action) => {
       };
     case LOGIN_SUCCESS:
       localStorage.setItem('token', action.payload.data.access);
-      //   localStorage.setItem('refreshToken', action.payload.refresh);
       return {
         ...state,
         token: action.payloadaccess,
         isAuthenticated: true,
         loading: false,
+        user: 'shakti',
       };
     case AUTH_ERROR:
     case LOGIN_FAIL:

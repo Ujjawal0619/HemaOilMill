@@ -15,7 +15,7 @@ import {
 const AuthState = (props) => {
   const initialState = {
     token: localStorage.getItem('token'),
-    isAuthenticated: null,
+    isAuthenticated: false,
     loading: true,
     user: null,
     error: null,
@@ -49,7 +49,6 @@ const AuthState = (props) => {
     };
     try {
       const res = await axios.post('/api/gettoken', formData, config);
-
       dispatch({
         type: LOGIN_SUCCESS,
         payload: res,

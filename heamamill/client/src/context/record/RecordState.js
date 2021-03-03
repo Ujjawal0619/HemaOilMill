@@ -31,10 +31,27 @@ const RecordState = (props) => {
           return Promise.reject(err);
         }
       );
-      const res = await axios.get(`/api/${type}`);
+      let res = await axios.get(`/api/${type}`);
+      if (type === 'payments') {
+        try {
+          const emp = await axios.get(`/api/employees`);
+          const idName = new Map();
+
+          emp.data.map((person) => {
+            idName.set(person.id, person.name);
+          });
+
+          res.data.forEach((payment) => {
+            payment.name = idName.get(parseInt(payment.employee));
+          });
+        } catch (err) {
+          console.log(err);
+        }
+      }
       console.log(res.data);
       dispatch({ type: LOAD_RECORD, payload: res.data });
     } catch (err) {
+      localStorage.removeItem('token');
       console.log(err.response.data);
     }
   };

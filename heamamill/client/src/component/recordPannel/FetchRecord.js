@@ -27,70 +27,68 @@ const FetchRecord = () => {
   }));
 
   const classes = useStyles();
-  const tableHead = [];
   let head = null;
+
   if (records) {
     head = records[0];
-    for (const [key, value] of Object.entries(records[0]))
-      if (key !== 'id') if (key !== 'desc') tableHead.push(key);
   }
 
   const formateDate = (date) => {
     let dt = new Date(date);
     return dt.toLocaleDateString();
   };
-  console.log(head);
   return (
     <div className={classes.dataBox}>
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label='caption table'>
           <caption>A basic table example with a caption</caption>
-          <TableHead>
-            <TableRow>
-              {/* {tableHead.map((key) => (
-                <TableCell style={{ textTransform: 'capitalize' }}>
-                  {' '}
-                  {key}
-                </TableCell>
-              ))} */}
-              <TableCell>{head.date && 'Date'}</TableCell>
-              <TableCell>{head.name && 'Name'}</TableCell>
-              <TableCell>{head.joining && 'Joining'}</TableCell>
-              <TableCell>{head.mobile && 'Mobile'}</TableCell>
-              <TableCell>{head.quantity && 'Quantity'}</TableCell>
-              <TableCell>{head.rate && 'Rate'}</TableCell>
-              <TableCell>{head.transport && 'Transport'}</TableCell>
-              <TableCell>{head.containerType && 'Container'}</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {/* {records.map((item, index) => {
-              return (
-                <TableRow key={index}>
-                  {item.map((Obj) => (
-                    <TableCell align='right'>{Object.value(Obj)}</TableCell>
+          {head ? (
+            <>
+              <TableHead>
+                <TableRow>
+                  <TableCell>{head.date && 'Date'}</TableCell>
+                  <TableCell>{head.name && 'Name'}</TableCell>
+                  <TableCell>{head.joining && 'Joining'}</TableCell>
+                  <TableCell>{head.mobile && 'Mobile'}</TableCell>
+                  <TableCell>{head.quantity && 'Quantity'}</TableCell>
+                  <TableCell>{head.rate && 'Rate'}</TableCell>
+                  <TableCell>{head.transport && 'Transport'}</TableCell>
+                  <TableCell>{head.containerType && 'Container'}</TableCell>
+                  <TableCell>{head.expenseType && 'Type'}</TableCell>
+                  <TableCell>{head.amount && 'Amount'}</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {records &&
+                  records.map((obj, index) => (
+                    <TableRow key={index}>
+                      <TableCell>{obj.date && formateDate(obj.date)}</TableCell>
+                      <TableCell>{obj.name && obj.name}</TableCell>
+                      <TableCell>
+                        {obj.joining && formateDate(obj.joining)}
+                      </TableCell>
+                      <TableCell>{obj.mobile && obj.mobile}</TableCell>
+                      <TableCell>{obj.quantity && obj.quantity}</TableCell>
+                      <TableCell>{obj.rate && obj.rate}</TableCell>
+                      <TableCell>{obj.transport && obj.transport}</TableCell>
+                      <TableCell>
+                        {obj.containerType && obj.containerType}
+                      </TableCell>
+                      <TableCell>
+                        {obj.expenseType && obj.expenseType}
+                      </TableCell>
+                      <TableCell>{obj.amount && obj.amount}</TableCell>
+                    </TableRow>
                   ))}
-                </TableRow>
-              );
-            })} */}
-            {records &&
-              records.map((obj, index) => (
-                <TableRow key={index}>
-                  <TableCell>{obj.date && formateDate(obj.date)}</TableCell>
-                  <TableCell>{obj.name && obj.name}</TableCell>
-                  <TableCell>
-                    {obj.joining && formateDate(obj.joining)}
-                  </TableCell>
-                  <TableCell>{obj.mobile && obj.mobile}</TableCell>
-                  <TableCell>{obj.quantity && obj.quantity}</TableCell>
-                  <TableCell>{obj.rate && obj.rate}</TableCell>
-                  <TableCell>{obj.transport && obj.transport}</TableCell>
-                  <TableCell>
-                    {obj.containerType && obj.containerType}
-                  </TableCell>
-                </TableRow>
-              ))}
-          </TableBody>
+              </TableBody>
+            </>
+          ) : (
+            <TableHead>
+              <TableRow>
+                <TableCell>No Data To Show!</TableCell>
+              </TableRow>
+            </TableHead>
+          )}
         </Table>
       </TableContainer>
     </div>

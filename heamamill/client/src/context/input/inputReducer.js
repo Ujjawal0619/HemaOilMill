@@ -6,6 +6,8 @@ import {
   USER_LOADED,
   MUSTARD_POST,
   SET_TYPE,
+  DATA_SENT,
+  SENT_ERROR,
 } from '../types';
 
 export default (state, action) => {

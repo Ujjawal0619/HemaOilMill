@@ -120,7 +120,7 @@ const DrawerItems = () => {
           <ListItemIcon>
             <GiIcons.GiMoneyStack size='25px' />
           </ListItemIcon>
-          <ListItemText primary='Dues' />
+          <ListItemText primary='Transactions' />
         </ListItem>
       </List>
       <Divider />

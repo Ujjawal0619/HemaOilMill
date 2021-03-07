@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from millapi.models import Mustard, Container, Employee, EmpPayment, OtherExpense, Oil, MustardCake
+from millapi.models import Mustard, Container, Employee, EmpPayment, OtherExpense, Oil, MustardCake, Dues
 
 # Mustard Serializer
 
@@ -56,3 +56,11 @@ class MustardCakeSerializer (serializers.ModelSerializer):
     class Meta:
         model = MustardCake
         fields = '__all__'
+
+
+class DuesSerializer (serializers.ModelSerializer):
+    class Meta:
+        model = Dues
+        fields = '__all__'
+
+# Dues Serializer

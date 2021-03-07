@@ -33,12 +33,17 @@ export default function CenteredGrid() {
     <div className={classes.root}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <h2 className={classes.heading}> {type}</h2>
+          <h2 className={classes.heading}>
+            {' '}
+            {type === 'dues' ? 'transactions' : type}
+          </h2>
         </Grid>
-        <Grid item xs={12} sm={4}>
-          <Input />
-        </Grid>
-        <Grid item xs={12} sm={8}>
+        {type !== 'dues' && (
+          <Grid item xs={12} sm={4}>
+            <Input />
+          </Grid>
+        )}
+        <Grid item xs={12} sm={type === 'dues' ? 12 : 8}>
           <FetchRecord />
         </Grid>
       </Grid>

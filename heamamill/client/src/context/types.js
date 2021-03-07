@@ -6,3 +6,5 @@ export const USER_LOADED = 'USER_LOADED';
 export const MUSTARD_POST = 'MUSTARD_POST';
 export const SET_TYPE = 'SET_TYPE';
 export const LOAD_RECORD = 'LOAD_RECORD';
+export const DATA_SENT = 'DATA_SENT';
+export const SENT_ERROR = 'SENT_ERROR';

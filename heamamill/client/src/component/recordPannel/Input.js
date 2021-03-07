@@ -11,8 +11,23 @@ import FormControl from '@material-ui/core/FormControl';
 import Button from '@material-ui/core/Button';
 
 const Input = () => {
-  const [container, setContainer] = useState('5 ltr');
-  const [expense, setExpense] = useState('Electric Bill');
+  const [formData, setFormData] = useState({
+    name: '',
+    mobile: '',
+    quantity: '',
+    rate: '',
+    transport: '',
+    address: '',
+    desc: '',
+    containerType: '15 ltr recycle',
+    identity: '',
+    employee: '',
+    amount: '',
+    expenseType: 'Electric Bill',
+    total: '',
+    paid: '',
+    due: '',
+  });
 
   const inputContext = useContext(InputContext);
 
@@ -31,6 +46,7 @@ const Input = () => {
     employee,
     amount,
     expenseType,
+    postInput,
   } = inputContext;
 
   const containers = [
@@ -70,22 +86,14 @@ const Input = () => {
       label: 'Other',
     },
   ];
-
-  const [values, setValues] = useState({
-    amount: '',
-    weight: '',
-  });
-
-  const handleWeightAmountChange = (prop) => (event) => {
-    setValues({ ...values, [prop]: event.target.value });
+  const onChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleChangeContainer = (event) => {
-    setContainer(event.target.value);
-  };
-
-  const handleChangeExpense = (event) => {
-    setExpense(event.target.value);
+  const onSubmit = () => {
+    // let total = ;
+    // setFormData({ ...formData, [amount]: total });
+    postInput(formData, type);
   };
 
   const useStyles = makeStyles(() => ({
@@ -126,22 +134,29 @@ const Input = () => {
         ) && (
           <TextField
             fullWidth
+            onChange={onChange}
             className={classes.inputField}
             id='outlined-text'
+            value={formData.name}
             label='Name'
+            name='name'
             type='text'
             variant='outlined'
           />
         )}
+
         {/* mobile */}
         {['mustard', 'oil', 'containers', 'payments', 'cake', 'dues'].includes(
           type
         ) && (
           <TextField
             fullWidth
+            onChange={onChange}
             className={classes.inputField}
             id='outlined-number'
+            value={formData.mobile}
             label='Phone'
+            name='mobile'
             type='number'
             InputLabelProps={{
               shrink: true,
@@ -149,6 +164,7 @@ const Input = () => {
             variant='outlined'
           />
         )}
+
         {/* quantity */}
         {['mustard', 'oil', 'cake'].includes(type) && (
           <FormControl
@@ -158,8 +174,9 @@ const Input = () => {
           >
             <OutlinedInput
               id='outlined-adornment-weight'
-              value={values.weight}
-              onChange={handleWeightAmountChange('weight')}
+              value={formData.weight}
+              onChange={onChange}
+              name='quantity'
               endAdornment={<InputAdornment position='end'>Kg</InputAdornment>}
               aria-describedby='outlined-weight-helper-text'
               inputProps={{
@@ -172,6 +189,7 @@ const Input = () => {
             </FormHelperText>
           </FormControl>
         )}
+
         {/* rate */}
         {['mustard', 'oil', 'containers', 'cake'].includes(type) && (
           <FormControl
@@ -182,8 +200,9 @@ const Input = () => {
             <InputLabel htmlFor='outlined-adornment-amount'>Rate</InputLabel>
             <OutlinedInput
               id='outlined-adornment-amount'
-              value={values.amount}
-              onChange={handleWeightAmountChange('amount')}
+              value={formData.rate}
+              onChange={onChange}
+              name='rate'
               startAdornment={
                 <InputAdornment position='start'>&#8377;</InputAdornment>
               }
@@ -191,6 +210,7 @@ const Input = () => {
             />
           </FormControl>
         )}
+
         {/* transport */}
         {['mustard', 'oil', 'containers', 'cake'].includes(type) && (
           <FormControl
@@ -203,8 +223,9 @@ const Input = () => {
             </InputLabel>
             <OutlinedInput
               id='outlined-adornment-amount'
-              value={values.amount}
-              onChange={handleWeightAmountChange('amount')}
+              value={formData.transport}
+              onChange={onChange}
+              name='transport'
               startAdornment={
                 <InputAdornment position='start'>&#8377;</InputAdornment>
               }
@@ -212,6 +233,7 @@ const Input = () => {
             />
           </FormControl>
         )}
+
         {/* address */}
         {[
           'mustard',
@@ -223,25 +245,30 @@ const Input = () => {
         ].includes(type) && (
           <TextField
             fullWidth
+            onChange={onChange}
             className={classes.inputField}
             id='outlined-multiline-static'
             label='Address'
+            name='address'
+            value={formData.address}
             multiline
             rows={2}
             defaultValue=''
             variant='outlined'
           />
         )}
+
         {/* containerType  */}
         {['containers'].includes(type) && (
           <TextField
             fullWidth
+            onChange={onChange}
+            name='containerType'
             className={classes.inputField}
             id='outlined-select-currency-native'
             select
             label='Container Type'
-            value={container}
-            onChange={handleChangeContainer}
+            value={formData.containerType}
             SelectProps={{
               native: true,
             }}
@@ -255,6 +282,7 @@ const Input = () => {
             ))}
           </TextField>
         )}
+
         {/* identity */}
         {['employees'].includes(type) && (
           <input
@@ -288,8 +316,15 @@ const Input = () => {
             </InputLabel>
             <OutlinedInput
               id='outlined-adornment-amount'
-              value={values.amount}
-              onChange={handleWeightAmountChange('amount')}
+              value={
+                (formData.amount = (
+                  parseFloat(formData.quantity === '' ? 0 : formData.quantity) *
+                    parseFloat(formData.rate === '' ? 0 : formData.rate) +
+                  parseFloat(formData.transport === '' ? 0 : formData.transport)
+                ).toFixed(2))
+              }
+              readOnly
+              name='amount'
               startAdornment={
                 <InputAdornment position='start'>&#8377;</InputAdornment>
               }
@@ -297,6 +332,7 @@ const Input = () => {
             />
           </FormControl>
         )}
+
         {/* expenseType */}
         {['other'].includes(type) && (
           <TextField
@@ -305,8 +341,9 @@ const Input = () => {
             id='outlined-select-currency-native'
             select
             label='Expense Type'
-            value={expense}
-            onChange={handleChangeExpense}
+            value={formData.expenseType}
+            name='expenseType'
+            onChange={onChange}
             SelectProps={{
               native: true,
             }}
@@ -320,6 +357,7 @@ const Input = () => {
             ))}
           </TextField>
         )}
+
         {/* payed */}
         {['mustard', 'oil', 'containers', 'payments', 'cake'].includes(
           type
@@ -334,8 +372,9 @@ const Input = () => {
             </InputLabel>
             <OutlinedInput
               id='outlined-adornment-amount'
-              value={values.amount}
-              onChange={handleWeightAmountChange('amount')}
+              value={formData.paid}
+              name='paid'
+              onChange={onChange}
               startAdornment={
                 <InputAdornment position='start'>&#8377;</InputAdornment>
               }
@@ -363,8 +402,14 @@ const Input = () => {
             </InputLabel>
             <OutlinedInput
               id='outlined-adornment-amount'
-              value={values.amount}
-              onChange={handleWeightAmountChange('amount')}
+              value={
+                (formData.due = (
+                  parseFloat(formData.amount === '' ? 0 : formData.amount) -
+                  parseFloat(formData.paid === '' ? 0 : formData.paid)
+                ).toFixed(2))
+              }
+              name='due'
+              readOnly
               startAdornment={
                 <InputAdornment position='start'>&#8377;</InputAdornment>
               }
@@ -386,6 +431,9 @@ const Input = () => {
         ].includes(type) && (
           <TextField
             fullWidth
+            onChange={onChange}
+            name='desc'
+            value={formData.desc}
             className={classes.inputField}
             id='outlined-multiline-static'
             label='Description'
@@ -395,11 +443,17 @@ const Input = () => {
             variant='outlined'
           />
         )}
+
         {/* Button */}
         <Button variant='contained' className={classes.btn}>
           Clear
         </Button>
-        <Button variant='contained' color='primary' className={classes.btn}>
+        <Button
+          variant='contained'
+          color='primary'
+          onClick={onSubmit}
+          className={classes.btn}
+        >
           Save
         </Button>
       </form>

@@ -1,8 +1,8 @@
-from .models import Mustard, Container, Employee, EmpPayment, OtherExpense, Oil, MustardCake
+from .models import Mustard, Container, Employee, EmpPayment, OtherExpense, Oil, MustardCake, Dues
 from rest_framework import viewsets, permissions
-from .serializers import MustardSerializer, ContainerSerializer, EmployeeSerializer, EmpPaymentSerializer, OtherExpenseSerializer, OilSerializer, MustardCakeSerializer
+from .serializers import MustardSerializer, ContainerSerializer, EmployeeSerializer, EmpPaymentSerializer, OtherExpenseSerializer, OilSerializer, MustardCakeSerializer, DuesSerializer
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
 # Mustard Viewset
 
@@ -80,3 +80,13 @@ class MustardCakeViewSet(viewsets.ModelViewSet):
         IsAuthenticated
     ]
     serializer_class = MustardCakeSerializer
+
+# Dues Viewset
+
+
+class DuesViewSet(viewsets.ModelViewSet):
+    queryset = Dues.objects.all()
+    permission_classes = [
+        IsAuthenticated
+    ]
+    serializer_class = DuesSerializer

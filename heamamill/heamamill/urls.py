@@ -10,6 +10,8 @@ urlpatterns = [
     path('api/gettoken', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/verifytoken', TokenVerifyView.as_view(), name='token_verify'),
     path('api/refreshtoken', TokenRefreshView.as_view(), name='token_refresh'),
+    # to include login button in api dashboard
+    path('auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]
 
 # urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

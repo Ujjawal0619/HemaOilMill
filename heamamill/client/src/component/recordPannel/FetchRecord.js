@@ -8,10 +8,13 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import RecordContext from '../../context/record/recordContext';
+import InputContext from '../../context/input/inputContext';
 
 const FetchRecord = () => {
   const recordContext = useContext(RecordContext);
+  const inputContext = useContext(InputContext);
   const { records } = recordContext;
+  const { type } = inputContext;
   const useStyles = makeStyles(() => ({
     dataBox: {
       borderRadius: '8px',
@@ -21,8 +24,19 @@ const FetchRecord = () => {
       boxShadow:
         '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
     },
+    tableContainer: {},
     table: {
-      minWidth: 700,
+      width: '100%',
+    },
+    noDues: {
+      color: '#02a802',
+      background: '#009e0038',
+      borderRadius: '10px',
+    },
+    dues: {
+      color: 'red',
+      background: '#ff00002e',
+      borderRadius: '10px',
     },
   }));
 
@@ -37,9 +51,10 @@ const FetchRecord = () => {
     let dt = new Date(date);
     return dt.toLocaleDateString();
   };
+
   return (
     <div className={classes.dataBox}>
-      <TableContainer component={Paper}>
+      <TableContainer component={Paper} className={classes.tableContainer}>
         <Table className={classes.table} aria-label='caption table'>
           <caption>A basic table example with a caption</caption>
           {head ? (
@@ -53,9 +68,19 @@ const FetchRecord = () => {
                   <TableCell>{head.quantity && 'Quantity'}</TableCell>
                   <TableCell>{head.rate && 'Rate'}</TableCell>
                   <TableCell>{head.transport && 'Transport'}</TableCell>
+                  <TableCell>{head.rate && head.quantity && 'Cost'}</TableCell>
                   <TableCell>{head.containerType && 'Container'}</TableCell>
                   <TableCell>{head.expenseType && 'Type'}</TableCell>
                   <TableCell>{head.amount && 'Amount'}</TableCell>
+                  {type === 'dues' ? (
+                    <>
+                      <TableCell>{head.total && 'Total'}</TableCell>
+                      <TableCell>{head.paid && 'Paid'}</TableCell>
+                      <TableCell>{head.due && 'Due'}</TableCell>
+                    </>
+                  ) : (
+                    ''
+                  )}
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -72,12 +97,41 @@ const FetchRecord = () => {
                       <TableCell>{obj.rate && obj.rate}</TableCell>
                       <TableCell>{obj.transport && obj.transport}</TableCell>
                       <TableCell>
+                        {obj.rate &&
+                          obj.quantity &&
+                          (
+                            parseFloat(obj.rate) * parseFloat(obj.quantity) +
+                            parseFloat(obj.transport)
+                          ).toFixed(2)}
+                      </TableCell>
+                      <TableCell>
                         {obj.containerType && obj.containerType}
                       </TableCell>
                       <TableCell>
                         {obj.expenseType && obj.expenseType}
                       </TableCell>
                       <TableCell>{obj.amount && obj.amount}</TableCell>
+                      {type === 'dues' ? (
+                        <>
+                          <TableCell>{obj.total && obj.total}</TableCell>
+                          <TableCell
+                            className={
+                              obj.total === obj.paid ? classes.noDues : ''
+                            }
+                          >
+                            {obj.paid && obj.paid}
+                          </TableCell>
+                          <TableCell
+                            className={
+                              obj.total !== obj.paid ? classes.dues : ''
+                            }
+                          >
+                            {obj.due && obj.due}
+                          </TableCell>
+                        </>
+                      ) : (
+                        ''
+                      )}
                     </TableRow>
                   ))}
               </TableBody>

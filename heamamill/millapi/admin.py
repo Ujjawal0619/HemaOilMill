@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Mustard, Container, Employee, EmpPayment, OtherExpense, Oil, MustardCake
+from .models import Mustard, Container, Employee, EmpPayment, OtherExpense, Oil, MustardCake, Dues
 
 # Register your models here.
 
@@ -37,3 +37,8 @@ class OilAdmin(admin.ModelAdmin):
 @admin.register(MustardCake)
 class MustardCakeAdmin(admin.ModelAdmin):
     list_display = [f.name for f in MustardCake._meta.get_fields()]
+
+
+@admin.register(Dues)
+class DuesAdmin(admin.ModelAdmin):
+    list_display = [f.name for f in Dues._meta.get_fields()]

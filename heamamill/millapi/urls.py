@@ -1,5 +1,5 @@
 from rest_framework import routers
-from .api import MustardViewSet, ContainerViewSet, EmployeeViewSet, EmpPaymentViewSet, OtherExpenseViewSet, OilViewSet, MustardCakeViewSet
+from .api import MustardViewSet, ContainerViewSet, EmployeeViewSet, EmpPaymentViewSet, OtherExpenseViewSet, OilViewSet, MustardCakeViewSet, DuesViewSet
 
 router = routers.DefaultRouter()
 router.register('api/mustard', MustardViewSet, 'mustard')
@@ -9,6 +9,6 @@ router.register('api/payments', EmpPaymentViewSet, 'payments')
 router.register('api/other', OtherExpenseViewSet, 'other')
 router.register('api/oil', OilViewSet, 'oil')
 router.register('api/cake', MustardCakeViewSet, 'cake')
-router.register('api/dues', MustardCakeViewSet, 'dues')
+router.register('api/dues', DuesViewSet, 'dues')
 
 urlpatterns = router.urls

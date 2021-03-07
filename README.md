@@ -39,6 +39,19 @@ if you are using vs code make sure to select interpreter which has project name.
    view:
    routers:
 
+// AUTH:
+in views add following to each ViewSet classes or define it globally.
+authentication_classes = [JWTAuthentication] -> auth type used
+permission_classes = [IsAuthenticated] -> grant/revoke permission to access admin dashboard & DRF api dashboard.
+for global:
+goto settings.py -> add:
+REST_FRAMEWORK = {
+'DEFAULT_AUTHENTICATION_CLASSES':['rest_framework.authentication.JWTAuthentication']
+'DEFAULT_PERMISSION_CLASSES':['rest_framework.permissions.IsAuthenticated']
+}
+
+add: path('auth/', include('rest_framework.urls', namespace='rest_framework')) to urls.py to activate login option in DRF dashboard.
+
 // required state //
 
 Mustard: (type: mustard)
@@ -63,4 +76,14 @@ MustardCake: (type:cake)
 date, name, mobile, quantity, rate, transport, address, desc
 
 Dues: (type:dues)
-name, ...
+{
+"duesType": "",
+"duesFor": "",
+"name": "",
+"mobile": "",
+"total": null,
+"paid": null,
+"due": null,
+"isClear": false,
+"desc": ""
+}

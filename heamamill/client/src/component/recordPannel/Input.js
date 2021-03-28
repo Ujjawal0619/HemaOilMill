@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import InputContext from '../../context/input/inputContext';
@@ -31,23 +31,27 @@ const Input = () => {
 
   const inputContext = useContext(InputContext);
 
-  const {
-    type,
-    name,
-    mobile,
-    quantity,
-    rate,
-    transport,
-    address,
-    desc,
-    containerType,
-    photo,
-    identity,
-    employee,
-    amount,
-    expenseType,
-    postInput,
-  } = inputContext;
+  const { type, postInput } = inputContext;
+
+  useEffect(() => {
+    setFormData({
+      name: '',
+      mobile: '',
+      quantity: '',
+      rate: '',
+      transport: '',
+      address: '',
+      desc: '',
+      containerType: '15 ltr recycle',
+      identity: '',
+      employee: '',
+      amount: '',
+      expenseType: 'Electric Bill',
+      total: '',
+      paid: '',
+      due: '',
+    });
+  }, [type]);
 
   const containers = [
     {
@@ -86,8 +90,22 @@ const Input = () => {
       label: 'Other',
     },
   ];
+
   const onChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    if (e.target.name === 'quintal' || e.target.name === 'quantity') {
+      const kg = document.getElementsByName('quantity')[0].value;
+      const qtl = document.getElementsByName('quintal')[0].value;
+      console.log(kg);
+      console.log(qtl);
+      setFormData({
+        ...formData,
+        ['quantity']:
+          parseFloat(kg ? parseFloat(kg) : 0) +
+          parseFloat(qtl ? parseFloat(qtl) : 0) * 100,
+      });
+    } else {
+      setFormData({ ...formData, [e.target.name]: e.target.value });
+    }
   };
 
   const onSubmit = () => {
@@ -166,28 +184,52 @@ const Input = () => {
         )}
 
         {/* quantity */}
-        {['mustard', 'oil', 'cake'].includes(type) && (
-          <FormControl
-            fullWidth
-            className={clsx(classes.inputField)}
-            variant='outlined'
-          >
-            <OutlinedInput
-              id='outlined-adornment-weight'
-              value={formData.weight}
-              onChange={onChange}
-              name='quantity'
-              endAdornment={<InputAdornment position='end'>Kg</InputAdornment>}
-              aria-describedby='outlined-weight-helper-text'
-              inputProps={{
-                'aria-label': 'weight',
-              }}
-              labelWidth={0}
-            />
-            <FormHelperText id='outlined-weight-helper-text'>
-              Weight
-            </FormHelperText>
-          </FormControl>
+        {['mustard', 'oil', 'cake', 'containers'].includes(type) && (
+          <>
+            <FormControl
+              fullWidth
+              className={clsx(classes.inputField)}
+              variant='outlined'
+            >
+              <FormHelperText id='outlined-weight-helper-text'>
+                Weight(kg)
+              </FormHelperText>
+              <OutlinedInput
+                id='outlined-adornment-weight'
+                onChange={onChange}
+                name='quantity'
+                endAdornment={
+                  <InputAdornment position='end'>kg</InputAdornment>
+                }
+                aria-describedby='outlined-weight-helper-text'
+                inputProps={{
+                  'aria-label': 'weight',
+                }}
+                labelWidth={0}
+              />
+            </FormControl>
+
+            <FormControl
+              fullWidth
+              className={clsx(classes.inputField)}
+              variant='outlined'
+            >
+              <FormHelperText id='outlined-weight-helper-text'>
+                Weight(Quintal)
+              </FormHelperText>
+              <OutlinedInput
+                id='outlined-adornment-weight'
+                onChange={onChange}
+                name='quintal'
+                endAdornment={<InputAdornment position='end'>q</InputAdornment>}
+                aria-describedby='outlined-weight-helper-text'
+                inputProps={{
+                  'aria-label': 'weight',
+                }}
+                labelWidth={0}
+              />
+            </FormControl>
+          </>
         )}
 
         {/* rate */}
@@ -384,14 +426,9 @@ const Input = () => {
         )}
 
         {/* duse */}
-        {[
-          'mustard',
-          'oil',
-          'containers',
-          'employees',
-          'payments',
-          'cake',
-        ].includes(type) && (
+        {['mustard', 'oil', 'containers', 'payments', 'cake'].includes(
+          type
+        ) && (
           <FormControl
             fullWidth
             className={classes.inputField}

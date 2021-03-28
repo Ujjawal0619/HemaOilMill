@@ -16,6 +16,21 @@ export default (state, action) => {
       return {
         ...state,
         type: action.payload,
+        name: '',
+        mobile: '',
+        quantity: '',
+        rate: '',
+        transport: '',
+        address: '',
+        desc: '',
+        containerType: '',
+        identity: '',
+        employee: '',
+        amount: '',
+        expenseType: '',
+        total: '',
+        paid: '',
+        due: '',
       };
     default:
       return state;

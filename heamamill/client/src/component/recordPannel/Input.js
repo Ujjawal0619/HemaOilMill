@@ -29,6 +29,11 @@ const Input = () => {
     due: '',
   });
 
+  const [weight, setWeight] = useState({
+    kg: '',
+    qtl: '',
+  });
+
   const inputContext = useContext(InputContext);
 
   const { type, postInput } = inputContext;
@@ -50,6 +55,10 @@ const Input = () => {
       total: '',
       paid: '',
       due: '',
+    });
+    setWeight({
+      kg: '',
+      qtl: '',
     });
   }, [type]);
 
@@ -95,8 +104,7 @@ const Input = () => {
     if (e.target.name === 'quintal' || e.target.name === 'quantity') {
       const kg = document.getElementsByName('quantity')[0].value;
       const qtl = document.getElementsByName('quintal')[0].value;
-      console.log(kg);
-      console.log(qtl);
+      setWeight({ ...weight, kg, qtl });
       setFormData({
         ...formData,
         ['quantity']:
@@ -197,6 +205,7 @@ const Input = () => {
               <OutlinedInput
                 id='outlined-adornment-weight'
                 onChange={onChange}
+                value={weight.kg}
                 name='quantity'
                 endAdornment={
                   <InputAdornment position='end'>kg</InputAdornment>
@@ -220,6 +229,7 @@ const Input = () => {
               <OutlinedInput
                 id='outlined-adornment-weight'
                 onChange={onChange}
+                value={weight.qtl}
                 name='quintal'
                 endAdornment={<InputAdornment position='end'>q</InputAdornment>}
                 aria-describedby='outlined-weight-helper-text'

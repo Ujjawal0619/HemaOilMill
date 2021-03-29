@@ -9,13 +9,14 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Button from '@material-ui/core/Button';
+import ContainerInput from './inputs/ContainerInput';
 
 const Input = () => {
   const [formData, setFormData] = useState({
     name: '',
     mobile: '',
-    quantity: '',
-    rate: '',
+    quantity: '0',
+    rate: '0',
     transport: '',
     address: '',
     desc: '',
@@ -34,6 +35,12 @@ const Input = () => {
     qtl: '',
   });
 
+  const [containersCount, setContainersCount] = useState({
+    fifteen: 0,
+    ten: 0,
+    five: 0,
+  });
+
   const inputContext = useContext(InputContext);
 
   const { type, postInput } = inputContext;
@@ -42,8 +49,8 @@ const Input = () => {
     setFormData({
       name: '',
       mobile: '',
-      quantity: '',
-      rate: '',
+      quantity: '0',
+      rate: '0',
       transport: '',
       address: '',
       desc: '',
@@ -103,7 +110,7 @@ const Input = () => {
   const onChange = (e) => {
     if (e.target.name === 'quintal' || e.target.name === 'quantity') {
       const kg = document.getElementsByName('quantity')[0].value;
-      const qtl = document.getElementsByName('quintal')[0].value;
+      const qtl = document.getElementsByName('quintal')[0]?.value;
       setWeight({ ...weight, kg, qtl });
       setFormData({
         ...formData,
@@ -117,9 +124,16 @@ const Input = () => {
   };
 
   const onSubmit = () => {
-    // let total = ;
-    // setFormData({ ...formData, [amount]: total });
     postInput(formData, type);
+  };
+
+  const updateContainer = (target) => {
+    setContainersCount((obj) => {
+      return {
+        ...obj,
+        [target.name]: parseInt(target.value),
+      };
+    });
   };
 
   const useStyles = makeStyles(() => ({
@@ -172,9 +186,15 @@ const Input = () => {
         )}
 
         {/* mobile */}
-        {['mustard', 'oil', 'containers', 'payments', 'cake', 'dues'].includes(
-          type
-        ) && (
+        {[
+          'mustard',
+          'oil',
+          'containers',
+          'payments',
+          'cake',
+          'dues',
+          'employees',
+        ].includes(type) && (
           <TextField
             fullWidth
             onChange={onChange}
@@ -192,54 +212,51 @@ const Input = () => {
         )}
 
         {/* quantity */}
-        {['mustard', 'oil', 'cake', 'containers'].includes(type) && (
-          <>
-            <FormControl
-              fullWidth
-              className={clsx(classes.inputField)}
-              variant='outlined'
-            >
-              <FormHelperText id='outlined-weight-helper-text'>
-                Weight(kg)
-              </FormHelperText>
-              <OutlinedInput
-                id='outlined-adornment-weight'
-                onChange={onChange}
-                value={weight.kg}
-                name='quantity'
-                endAdornment={
-                  <InputAdornment position='end'>kg</InputAdornment>
-                }
-                aria-describedby='outlined-weight-helper-text'
-                inputProps={{
-                  'aria-label': 'weight',
-                }}
-                labelWidth={0}
-              />
-            </FormControl>
-
-            <FormControl
-              fullWidth
-              className={clsx(classes.inputField)}
-              variant='outlined'
-            >
-              <FormHelperText id='outlined-weight-helper-text'>
-                Weight(Quintal)
-              </FormHelperText>
-              <OutlinedInput
-                id='outlined-adornment-weight'
-                onChange={onChange}
-                value={weight.qtl}
-                name='quintal'
-                endAdornment={<InputAdornment position='end'>q</InputAdornment>}
-                aria-describedby='outlined-weight-helper-text'
-                inputProps={{
-                  'aria-label': 'weight',
-                }}
-                labelWidth={0}
-              />
-            </FormControl>
-          </>
+        {['mustard', 'oil', 'cake'].includes(type) && (
+          <FormControl
+            fullWidth
+            className={clsx(classes.inputField)}
+            variant='outlined'
+          >
+            <FormHelperText id='outlined-weight-helper-text'>
+              Weight(kg)
+            </FormHelperText>
+            <OutlinedInput
+              id='outlined-adornment-weight'
+              onChange={onChange}
+              value={weight.kg}
+              name='quantity'
+              endAdornment={<InputAdornment position='end'>kg</InputAdornment>}
+              aria-describedby='outlined-weight-helper-text'
+              inputProps={{
+                'aria-label': 'weight',
+              }}
+              labelWidth={0}
+            />
+          </FormControl>
+        )}
+        {['mustard', 'cake'].includes(type) && (
+          <FormControl
+            fullWidth
+            className={clsx(classes.inputField)}
+            variant='outlined'
+          >
+            <FormHelperText id='outlined-weight-helper-text'>
+              Weight(Quintal)
+            </FormHelperText>
+            <OutlinedInput
+              id='outlined-adornment-weight'
+              onChange={onChange}
+              value={weight.qtl}
+              name='quintal'
+              endAdornment={<InputAdornment position='end'>q</InputAdornment>}
+              aria-describedby='outlined-weight-helper-text'
+              inputProps={{
+                'aria-label': 'weight',
+              }}
+              labelWidth={0}
+            />
+          </FormControl>
         )}
 
         {/* rate */}
@@ -335,6 +352,8 @@ const Input = () => {
           </TextField>
         )}
 
+        {['oil'].includes(type) && <ContainerInput trigger={updateContainer} />}
+
         {/* identity */}
         {['employees'].includes(type) && (
           <input
@@ -349,15 +368,9 @@ const Input = () => {
 
         {/* employee */}
         {/* amount */}
-        {[
-          'mustard',
-          'oil',
-          'containers',
-          'payments',
-          'cake',
-          'other',
-          'dues',
-        ].includes(type) && (
+        {['mustard', 'oil', 'containers', 'payments', 'cake', 'dues'].includes(
+          type
+        ) && (
           <FormControl
             fullWidth
             className={classes.inputField}
@@ -370,12 +383,38 @@ const Input = () => {
               id='outlined-adornment-amount'
               value={
                 (formData.amount = (
-                  parseFloat(formData.quantity === '' ? 0 : formData.quantity) *
+                  (parseFloat(
+                    formData.quantity === '' ? 0 : formData.quantity
+                  ) +
+                    containersCount.fifteen * 15 +
+                    containersCount.ten * 10 +
+                    containersCount.five * 5) *
                     parseFloat(formData.rate === '' ? 0 : formData.rate) +
                   parseFloat(formData.transport === '' ? 0 : formData.transport)
                 ).toFixed(2))
               }
               readOnly
+              name='amount'
+              startAdornment={
+                <InputAdornment position='start'>&#8377;</InputAdornment>
+              }
+              labelWidth={90}
+            />
+          </FormControl>
+        )}
+        {['other'].includes(type) && (
+          <FormControl
+            fullWidth
+            className={classes.inputField}
+            variant='outlined'
+          >
+            <InputLabel htmlFor='outlined-adornment-amount'>
+              Total Amount
+            </InputLabel>
+            <OutlinedInput
+              id='outlined-adornment-amount'
+              value={formData.amount}
+              onChange={onChange}
               name='amount'
               startAdornment={
                 <InputAdornment position='start'>&#8377;</InputAdornment>

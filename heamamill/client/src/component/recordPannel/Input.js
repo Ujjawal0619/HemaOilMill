@@ -10,6 +10,9 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Button from '@material-ui/core/Button';
 import ContainerInput from './inputs/ContainerInput';
+import PaymentCalender from '../layout/PaymentCalender';
+import EmployeesList from './inputs/EmployeesList';
+import EmployeeListContext from '../../context/employeeList/employeeListContext';
 
 const Input = () => {
   const [formData, setFormData] = useState({
@@ -42,6 +45,8 @@ const Input = () => {
   });
 
   const inputContext = useContext(InputContext);
+  const employeeListContext = useContext(EmployeeListContext);
+  const { loadEmployees } = employeeListContext;
 
   const { type, postInput } = inputContext;
 
@@ -67,6 +72,7 @@ const Input = () => {
       kg: '',
       qtl: '',
     });
+    if (type === 'payments') loadEmployees();
   }, [type]);
 
   const containers = [
@@ -131,7 +137,11 @@ const Input = () => {
     setContainersCount((obj) => {
       return {
         ...obj,
-        [target.name]: parseInt(target.value),
+        [target.name]: target.value
+          ? parseInt(target.value) < 0
+            ? 0
+            : parseInt(target.value)
+          : 0,
       };
     });
   };
@@ -185,6 +195,9 @@ const Input = () => {
           />
         )}
 
+        {/* Employees List */}
+        {['payments'].includes(type) && <EmployeesList />}
+
         {/* mobile */}
         {[
           'mustard',
@@ -212,14 +225,14 @@ const Input = () => {
         )}
 
         {/* quantity */}
-        {['mustard', 'oil', 'cake'].includes(type) && (
+        {['mustard', 'oil', 'cake', 'containers'].includes(type) && (
           <FormControl
             fullWidth
             className={clsx(classes.inputField)}
             variant='outlined'
           >
             <FormHelperText id='outlined-weight-helper-text'>
-              Weight(kg)
+              {type !== 'containers' ? 'Weight(kg)' : 'Quantity'}
             </FormHelperText>
             <OutlinedInput
               id='outlined-adornment-weight'
@@ -529,6 +542,9 @@ const Input = () => {
             variant='outlined'
           />
         )}
+
+        {/* Payment Calender */}
+        {['payments'].includes(type) && <PaymentCalender />}
 
         {/* Button */}
         <Button variant='contained' className={classes.btn}>

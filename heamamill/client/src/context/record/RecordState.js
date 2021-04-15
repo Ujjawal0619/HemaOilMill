@@ -31,6 +31,7 @@ const RecordState = (props) => {
           return Promise.reject(err);
         }
       );
+
       let res = await axios.get(`/api/${type}`);
       if (type === 'payments') {
         try {
@@ -48,6 +49,7 @@ const RecordState = (props) => {
           console.log(err);
         }
       }
+      // debug
       console.log(res.data);
       dispatch({ type: LOAD_RECORD, payload: res.data });
     } catch (err) {

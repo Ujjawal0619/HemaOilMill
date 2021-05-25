@@ -9,11 +9,12 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import RecordContext from '../../context/record/recordContext';
 import InputContext from '../../context/input/inputContext';
+import Button from '@material-ui/core/Button';
 
 const FetchRecord = () => {
   const recordContext = useContext(RecordContext);
   const inputContext = useContext(InputContext);
-  const { records } = recordContext;
+  const { records, loadInputForm } = recordContext;
   const { type } = inputContext;
   const useStyles = makeStyles(() => ({
     dataBox: {
@@ -38,6 +39,10 @@ const FetchRecord = () => {
       background: '#ff00002e',
       borderRadius: '10px',
     },
+    btn: {
+      marginLeft: '1rem',
+      marginTop: '1rem',
+    },
   }));
 
   const classes = useStyles();
@@ -50,6 +55,21 @@ const FetchRecord = () => {
   const formateDate = (date) => {
     let dt = new Date(date);
     return dt.toLocaleDateString();
+  };
+
+  const update = (e) => {
+    loadInputForm(e.currentTarget.value); // populate input
+    // PUT request
+    // clear current state
+    // fetch updated record
+    console.log(e.currentTarget.value);
+  };
+
+  const onDelete = (e) => {
+    // DELETE request
+    // clear curr state
+    // fetch updated reocrd
+    console.log(e.currentTarget.value);
   };
 
   return (
@@ -85,8 +105,8 @@ const FetchRecord = () => {
               </TableHead>
               <TableBody>
                 {records &&
-                  records.map((obj, index) => (
-                    <TableRow key={index}>
+                  records.map((obj) => (
+                    <TableRow key={obj.id}>
                       <TableCell>{obj.date && formateDate(obj.date)}</TableCell>
                       <TableCell>{obj.name && obj.name}</TableCell>
                       <TableCell>
@@ -132,6 +152,27 @@ const FetchRecord = () => {
                       ) : (
                         ''
                       )}
+                      <TableCell>
+                        <Button
+                          value={obj.id}
+                          variant='contained'
+                          onClick={update}
+                          className={classes.btn}
+                        >
+                          Edit
+                        </Button>
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          variant='contained'
+                          color='secondary'
+                          value={obj.id}
+                          onClick={onDelete}
+                          className={classes.btn}
+                        >
+                          Delete
+                        </Button>
+                      </TableCell>
                     </TableRow>
                   ))}
               </TableBody>

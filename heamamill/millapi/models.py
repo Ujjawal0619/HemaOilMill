@@ -49,8 +49,8 @@ class Employee(models.Model):
     joining = models.DateTimeField(auto_now_add=True)
     name = models.CharField(max_length=50)
     mobile = models.CharField(max_length=10, default='Not Available')
-    photo = models.ImageField(upload_to="emp_photo/%Y/%m/%d/")
-    identity = models.FileField(upload_to="emp_identity/%Y/%m/%d/")
+    # photo = models.ImageField(upload_to="emp_photo/%Y/%m/%d/")
+    # identity = models.FileField(upload_to="emp_identity/%Y/%m/%d/")
     address = models.CharField(
         max_length=200, blank=True, default='Not Available')
 

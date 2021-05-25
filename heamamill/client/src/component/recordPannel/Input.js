@@ -13,6 +13,7 @@ import ContainerInput from './inputs/ContainerInput';
 import PaymentCalender from '../layout/PaymentCalender';
 import EmployeesList from './inputs/EmployeesList';
 import EmployeeListContext from '../../context/employeeList/employeeListContext';
+import RecordContext from '../../context/record/recordContext';
 
 const Input = () => {
   const [formData, setFormData] = useState({
@@ -28,9 +29,9 @@ const Input = () => {
     employee: '',
     amount: '',
     expenseType: 'Electric Bill',
-    total: '',
-    paid: '',
-    due: '',
+    total: '0',
+    paid: '0',
+    due: '0',
   });
 
   const [weight, setWeight] = useState({
@@ -46,34 +47,45 @@ const Input = () => {
 
   const inputContext = useContext(InputContext);
   const employeeListContext = useContext(EmployeeListContext);
-  const { loadEmployees } = employeeListContext;
+  const recordContext = useContext(RecordContext);
 
+  const { loadEmployees } = employeeListContext;
+  const { loadInput } = recordContext;
   const { type, postInput } = inputContext;
 
   useEffect(() => {
-    setFormData({
-      name: '',
-      mobile: '',
-      quantity: '0',
-      rate: '0',
-      transport: '',
-      address: '',
-      desc: '',
-      containerType: '15 ltr recycle',
-      identity: '',
-      employee: '',
-      amount: '',
-      expenseType: 'Electric Bill',
-      total: '',
-      paid: '',
-      due: '',
-    });
-    setWeight({
-      kg: '',
-      qtl: '',
-    });
+    if (loadInput) {
+      // console.log(loadInput);
+      console.log(parseInt(loadInput.quantity) % 100);
+      setWeight({
+        kg: parseFloat(loadInput.quantity) % 100,
+        qtl: Math.floor(parseFloat(loadInput.quantity) / 100),
+      });
+      setFormData(loadInput);
+    } else {
+      setFormData({
+        name: '',
+        mobile: '',
+        quantity: '0',
+        rate: '0',
+        transport: '',
+        address: '',
+        desc: '',
+        containerType: '15 ltr recycle',
+        employee: '',
+        amount: '0',
+        expenseType: 'Electric Bill',
+        total: '0',
+        paid: '0',
+        due: '0',
+      });
+      setWeight({
+        kg: '',
+        qtl: '',
+      });
+    }
     if (type === 'payments') loadEmployees();
-  }, [type]);
+  }, [type, recordContext]);
 
   const containers = [
     {
@@ -366,18 +378,6 @@ const Input = () => {
         )}
 
         {['oil'].includes(type) && <ContainerInput trigger={updateContainer} />}
-
-        {/* identity */}
-        {['employees'].includes(type) && (
-          <input
-            accept='image/*'
-            //   style={{ display: 'none' }}
-            className={classes.uploadField}
-            id='contained-button-file'
-            multiple
-            type='file'
-          />
-        )}
 
         {/* employee */}
         {/* amount */}

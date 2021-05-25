@@ -1,3 +1,9 @@
+0. RUN:
+
+   1. pipenv shell // in project root
+   2. python manage.py runserver // inside project where manage.py exist
+   3. npm start // in client
+
 1. command: pip install pipenv
 
 creating an environment using 'pipenv'.
@@ -87,3 +93,7 @@ Dues: (type:dues)
 "isClear": false,
 "desc": ""
 }
+
+django admin:
+user: ujjwal
+pass: admin@12345

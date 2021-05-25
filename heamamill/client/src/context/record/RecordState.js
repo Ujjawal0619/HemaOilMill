@@ -3,11 +3,12 @@ import axios from 'axios';
 import RecordContext from './recordContext';
 import RecordReducer from './recordReducer';
 
-import { SET_TYPE, LOAD_RECORD } from '../types';
+import { UPDATE, LOAD_RECORD } from '../types';
 
 const RecordState = (props) => {
   const initialState = {
     records: null,
+    loadInput: null,
   };
 
   const [state, dispatch] = useReducer(RecordReducer, initialState);
@@ -50,11 +51,19 @@ const RecordState = (props) => {
         }
       }
       // debug
-      console.log(res.data);
       dispatch({ type: LOAD_RECORD, payload: res.data });
+      console.log(state);
     } catch (err) {
       localStorage.removeItem('token');
       console.log(err.response.data);
+    }
+  };
+
+  const loadInputForm = (id) => {
+    if (id) {
+      dispatch({ type: UPDATE, payload: id });
+    } else {
+      console.log('update id is not valid');
     }
   };
 
@@ -62,7 +71,9 @@ const RecordState = (props) => {
     <RecordContext.Provider
       value={{
         records: state.records,
+        loadInput: state.loadInput,
         getRecords,
+        loadInputForm,
       }}
     >
       {props.children}

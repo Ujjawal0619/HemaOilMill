@@ -10,3 +10,4 @@ export const DATA_SENT = 'DATA_SENT';
 export const SENT_ERROR = 'SENT_ERROR';
 export const EMP_LOADED = 'EMP_LOADED';
 export const SET_EMP = 'SET_EMP';
+export const UPDATE = 'UPDATE';

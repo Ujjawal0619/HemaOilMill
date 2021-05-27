@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -14,8 +14,14 @@ import Button from '@material-ui/core/Button';
 const FetchRecord = () => {
   const recordContext = useContext(RecordContext);
   const inputContext = useContext(InputContext);
-  const { records, loadInputForm } = recordContext;
+  const { records, getRecords, loadInputForm, deleteRecord, loadInput } =
+    recordContext;
   const { type } = inputContext;
+
+  useEffect(() => {
+    getRecords(type);
+  }, [type, loadInput]);
+
   const useStyles = makeStyles(() => ({
     dataBox: {
       borderRadius: '8px',
@@ -59,16 +65,15 @@ const FetchRecord = () => {
 
   const update = (e) => {
     loadInputForm(e.currentTarget.value); // populate input
-    // PUT request
+    // PUT request (according to 'loadInput' state, PUT or POST )
     // clear current state
     // fetch updated record
-    console.log(e.currentTarget.value);
   };
 
   const onDelete = (e) => {
-    // DELETE request
-    // clear curr state
-    // fetch updated reocrd
+    deleteRecord(type, e.currentTarget.value);
+    // clearRecords();
+    // fetch updated reocrd (inside input.js according to type)
     console.log(e.currentTarget.value);
   };
 

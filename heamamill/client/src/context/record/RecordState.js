@@ -3,7 +3,13 @@ import axios from 'axios';
 import RecordContext from './recordContext';
 import RecordReducer from './recordReducer';
 
-import { UPDATE, LOAD_RECORD } from '../types';
+import {
+  UPDATE,
+  LOAD_RECORD,
+  CLEAR_RECORDS,
+  CLEAR_LOAD_INPUT,
+  DELETE_RECORD,
+} from '../types';
 
 const RecordState = (props) => {
   const initialState = {
@@ -32,7 +38,7 @@ const RecordState = (props) => {
           return Promise.reject(err);
         }
       );
-
+      console.log(type);
       let res = await axios.get(`/api/${type}`);
       if (type === 'payments') {
         try {
@@ -52,11 +58,14 @@ const RecordState = (props) => {
       }
       // debug
       dispatch({ type: LOAD_RECORD, payload: res.data });
-      console.log(state);
     } catch (err) {
       localStorage.removeItem('token');
       console.log(err.response.data);
     }
+  };
+
+  const clearRecords = () => {
+    dispatch({ type: CLEAR_RECORDS });
   };
 
   const loadInputForm = (id) => {
@@ -67,13 +76,30 @@ const RecordState = (props) => {
     }
   };
 
+  const clearLoadInput = () => {
+    if (state.loadInput) dispatch({ type: CLEAR_LOAD_INPUT });
+  };
+
+  const deleteRecord = async (type, id) => {
+    try {
+      await axios.delete(`/api/${type}/${id}`);
+      if (state.records) dispatch({ type: DELETE_RECORD, payload: id });
+      else console.log('On Delete Record, records state is null');
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <RecordContext.Provider
       value={{
         records: state.records,
         loadInput: state.loadInput,
         getRecords,
+        clearRecords,
         loadInputForm,
+        clearLoadInput,
+        deleteRecord,
       }}
     >
       {props.children}

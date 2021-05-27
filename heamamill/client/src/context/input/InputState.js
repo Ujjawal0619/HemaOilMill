@@ -34,6 +34,7 @@ const InputState = (props) => {
 
   // when submit form
   const postInput = async (formData, type) => {
+    console.log(formData);
     try {
       const accessToken = localStorage.getItem('token');
       axios.interceptors.request.use(
@@ -52,7 +53,27 @@ const InputState = (props) => {
       dispatch({ type: SENT_ERROR, payload: err.response });
     }
   };
-
+  // Upadat
+  const updateInput = async (formData, type) => {
+    console.log(formData.id, formData);
+    try {
+      const accessToken = localStorage.getItem('token');
+      axios.interceptors.request.use(
+        (config) => {
+          config.headers.authorization = `Bearer ${accessToken}`;
+          return config;
+        },
+        (err) => {
+          return Promise.reject(err);
+        }
+      );
+      const res = await axios.put(`/api/${type}/${formData.id}/`, formData);
+      dispatch({ type: DATA_SENT, payload: res.data });
+    } catch (err) {
+      console.log(err);
+      dispatch({ type: SENT_ERROR, payload: err.response });
+    }
+  };
   return (
     <InputContext.Provider
       value={{
@@ -74,6 +95,7 @@ const InputState = (props) => {
         due: state.due,
         setType,
         postInput,
+        updateInput,
       }}
     >
       {props.children}

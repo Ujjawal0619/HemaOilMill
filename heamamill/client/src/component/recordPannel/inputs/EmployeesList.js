@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -25,8 +25,6 @@ export default function EmployeesList() {
     setId(e.target.value);
     if (id !== '') setEmp(id);
   };
-
-  console.log(employees);
 
   return (
     <div>

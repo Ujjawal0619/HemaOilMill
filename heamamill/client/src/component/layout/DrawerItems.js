@@ -34,17 +34,22 @@ const DrawerItems = () => {
 
   const { logout } = authContext;
   const { type, setType } = inputContext;
-  const { getRecords } = recordContext;
+  const { getRecords, clearLoadInput, clearRecords } = recordContext;
 
   useEffect(() => {
     if (!type) {
       setType('mustard');
-      getRecords('mustard');
     }
   }, []);
+
   const handleSetType = (type) => {
     setType(type);
-    getRecords(type);
+    clearAll();
+  };
+
+  const clearAll = () => {
+    clearLoadInput();
+    clearRecords();
   };
 
   // Side Bar Menue

@@ -14,9 +14,10 @@ import PaymentCalender from '../layout/PaymentCalender';
 import EmployeesList from './inputs/EmployeesList';
 import EmployeeListContext from '../../context/employeeList/employeeListContext';
 import RecordContext from '../../context/record/recordContext';
+import { CLEAR_RECORDS } from '../../context/types';
 
 const Input = () => {
-  const [formData, setFormData] = useState({
+  const emptyState = {
     name: '',
     mobile: '',
     quantity: '0',
@@ -32,7 +33,9 @@ const Input = () => {
     total: '0',
     paid: '0',
     due: '0',
-  });
+  };
+
+  const [formData, setFormData] = useState(emptyState);
 
   const [weight, setWeight] = useState({
     kg: '',
@@ -49,43 +52,26 @@ const Input = () => {
   const employeeListContext = useContext(EmployeeListContext);
   const recordContext = useContext(RecordContext);
 
+  const { type, postInput, updateInput } = inputContext;
   const { loadEmployees } = employeeListContext;
-  const { loadInput } = recordContext;
-  const { type, postInput } = inputContext;
+  const { loadInput, clearLoadInput, records, clearRecords } = recordContext;
 
   useEffect(() => {
     if (loadInput) {
-      // console.log(loadInput);
-      console.log(parseInt(loadInput.quantity) % 100);
       setWeight({
         kg: parseFloat(loadInput.quantity) % 100,
         qtl: Math.floor(parseFloat(loadInput.quantity) / 100),
       });
       setFormData(loadInput);
     } else {
-      setFormData({
-        name: '',
-        mobile: '',
-        quantity: '0',
-        rate: '0',
-        transport: '',
-        address: '',
-        desc: '',
-        containerType: '15 ltr recycle',
-        employee: '',
-        amount: '0',
-        expenseType: 'Electric Bill',
-        total: '0',
-        paid: '0',
-        due: '0',
-      });
+      setFormData(emptyState);
       setWeight({
         kg: '',
         qtl: '',
       });
     }
     if (type === 'payments') loadEmployees();
-  }, [type, recordContext]);
+  }, [type, loadInput, records]);
 
   const containers = [
     {
@@ -141,8 +127,29 @@ const Input = () => {
     }
   };
 
-  const onSubmit = () => {
-    postInput(formData, type);
+  const onSubmit = (e) => {
+    e.preventDefault();
+    if (loadInput) {
+      updateInput(formData, type);
+    } else {
+      postInput(formData, type);
+    }
+    clearAll();
+  };
+
+  const clearAll = () => {
+    setFormData(emptyState);
+    clearRecords();
+    clearLoadInput();
+    setWeight({
+      kg: '',
+      qtl: '',
+    });
+    setContainersCount({
+      fifteen: 0,
+      ten: 0,
+      five: 0,
+    });
   };
 
   const updateContainer = (target) => {
@@ -155,6 +162,10 @@ const Input = () => {
             : parseInt(target.value)
           : 0,
       };
+    });
+    setFormData({
+      ...formData,
+      containerType: `5(${containersCount.five}), 10(${containersCount.ten}), 15(${containersCount.fifteen})`,
     });
   };
 
@@ -260,6 +271,7 @@ const Input = () => {
             />
           </FormControl>
         )}
+
         {['mustard', 'cake'].includes(type) && (
           <FormControl
             fullWidth
@@ -415,6 +427,7 @@ const Input = () => {
             />
           </FormControl>
         )}
+
         {['other'].includes(type) && (
           <FormControl
             fullWidth

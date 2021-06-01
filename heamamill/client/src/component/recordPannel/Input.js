@@ -59,6 +59,12 @@ const Input = () => {
     },
   ];
 
+  const initContainersCount = {
+    fifteen: 0,
+    ten: 0,
+    five: 0,
+  };
+
   const expenses = [
     {
       value: null,
@@ -136,11 +142,7 @@ const Input = () => {
     qtl: '',
   });
 
-  const [containersCount, setContainersCount] = useState({
-    fifteen: 0,
-    ten: 0,
-    five: 0,
-  });
+  const [containersCount, setContainersCount] = useState(initContainersCount);
 
   const [validate, setValidte] = useState(validationData);
 
@@ -160,15 +162,21 @@ const Input = () => {
         kg: parseFloat(loadInput.quantity) % 100,
         qtl: Math.floor(parseFloat(loadInput.quantity) / 100),
       });
+      setContainersCount(loadInput.containerType); // object type is needed
       setFormData(loadInput);
     } else {
-      setFormData(emptyState);
+      setFormData({
+        ...emptyState,
+        ['containerType']: type === 'oil' ? initContainersCount : '',
+      });
       setWeight({
         kg: '',
         qtl: '',
       });
+      setContainersCount(initContainersCount);
     }
     if (type === 'payments') loadEmployees();
+    setValidte(validationData);
   }, [type, loadInput, records]);
 
   useEffect(() => {
@@ -496,11 +504,7 @@ const Input = () => {
       kg: '',
       qtl: '',
     });
-    setContainersCount({
-      fifteen: 0,
-      ten: 0,
-      five: 0,
-    });
+    setContainersCount(initContainersCount);
   };
 
   const updateContainer = (target) => {
@@ -514,17 +518,14 @@ const Input = () => {
           : 0,
       };
     });
-    setFormData({
-      ...formData,
-      containerType: `5(${containersCount.five}), 10(${containersCount.ten}), 15(${containersCount.fifteen})`,
-    });
   };
 
   const isValidNumber = (value) => {
-    return (
-      typeof parseFloat(value) === 'number' &&
+    // return 0 if false else number itself
+    return typeof parseFloat(value) === 'number' &&
       Number.isNaN(parseFloat(value)) === false
-    );
+      ? parseFloat(value)
+      : 0;
   };
 
   const useStyles = makeStyles(() => ({
@@ -771,7 +772,12 @@ const Input = () => {
           </TextField>
         )}
 
-        {['oil'].includes(type) && <ContainerInput trigger={updateContainer} />}
+        {['oil'].includes(type) && (
+          <ContainerInput
+            trigger={updateContainer}
+            containersCount={containersCount}
+          />
+        )}
 
         {/* employee */}
         {/* amount */}
@@ -788,22 +794,15 @@ const Input = () => {
             </InputLabel>
             <OutlinedInput
               id='outlined-adornment-amount'
-              value={
-                (formData.amount = (
-                  (parseFloat(
-                    isValidNumber(formData.quantity) ? formData.quantity : 0
-                  ) +
-                    containersCount.fifteen * 15 +
-                    containersCount.ten * 10 +
-                    containersCount.five * 5) *
-                    parseFloat(
-                      isValidNumber(formData.rate) ? formData.rate : 0
-                    ) +
-                  parseFloat(
-                    isValidNumber(formData.transport) ? formData.transport : 0
-                  )
-                ).toFixed(2))
-              }
+              value={parseFloat(
+                (formData.amount =
+                  (isValidNumber(formData.quantity) +
+                    isValidNumber(containersCount.fifteen) * 15 +
+                    isValidNumber(containersCount.ten) * 10 +
+                    isValidNumber(containersCount.five) * 5) *
+                    isValidNumber(formData.rate) +
+                  isValidNumber(formData.transport))
+              ).toFixed(2)}
               readOnly
               name='amount'
               startAdornment={
@@ -910,10 +909,7 @@ const Input = () => {
               id='outlined-adornment-amount'
               value={
                 (formData.due = (
-                  parseFloat(
-                    isValidNumber(formData.amount) ? formData.amount : 0
-                  ) -
-                  parseFloat(isValidNumber(formData.paid) ? formData.paid : 0)
+                  isValidNumber(formData.amount) - isValidNumber(formData.paid)
                 ).toFixed(2))
               }
               name='due'

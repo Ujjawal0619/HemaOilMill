@@ -25,9 +25,9 @@ const useStyles = makeStyles((theme) => ({
 
 const ContainerInput = (props) => {
   const classes = useStyles();
-
+  const { trigger, containersCount } = props;
   const onChange = (e) => {
-    props.trigger(e.target);
+    trigger(e.target);
   };
 
   return (
@@ -40,6 +40,7 @@ const ContainerInput = (props) => {
               id='standard-number'
               label='15 kg'
               name='fifteen'
+              value={containersCount.fifteen}
               onChange={onChange}
               type='number'
               InputLabelProps={{
@@ -52,6 +53,7 @@ const ContainerInput = (props) => {
               id='standard-number'
               label='10 kg'
               name='ten'
+              value={containersCount.ten}
               onChange={onChange}
               type='number'
               InputLabelProps={{
@@ -64,6 +66,7 @@ const ContainerInput = (props) => {
               id='standard-number'
               label='5 kg'
               name='five'
+              value={containersCount.five}
               onChange={onChange}
               type='number'
               InputLabelProps={{

@@ -55,7 +55,6 @@ const InputState = (props) => {
   };
   // Upadat
   const updateInput = async (formData, type) => {
-    console.log(formData.id, formData);
     try {
       const accessToken = localStorage.getItem('token');
       axios.interceptors.request.use(

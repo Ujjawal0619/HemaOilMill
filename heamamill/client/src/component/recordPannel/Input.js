@@ -14,25 +14,119 @@ import PaymentCalender from '../layout/PaymentCalender';
 import EmployeesList from './inputs/EmployeesList';
 import EmployeeListContext from '../../context/employeeList/employeeListContext';
 import RecordContext from '../../context/record/recordContext';
-import { CLEAR_RECORDS } from '../../context/types';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 const Input = () => {
   const emptyState = {
-    name: '',
-    mobile: '',
-    quantity: '0',
-    rate: '0',
-    transport: '',
-    address: '',
-    desc: '',
-    containerType: '15 ltr recycle',
-    identity: '',
-    employee: '',
-    amount: '',
-    expenseType: 'Electric Bill',
-    total: '0',
-    paid: '0',
-    due: '0',
+    name: null,
+    mobile: null,
+    quantity: null,
+    rate: null,
+    transport: null,
+    address: null,
+    desc: null,
+    containerType: '',
+    transactionType: 'buy',
+    employee: null,
+    amount: null,
+    expenseType: '',
+    paid: null,
+    due: null,
+  };
+
+  const containers = [
+    {
+      value: null,
+      label: '',
+    },
+    {
+      value: '5 ltr',
+      label: '5 ltr',
+    },
+    {
+      value: '10 ltr',
+      label: '10 ltr',
+    },
+    {
+      value: '15 ltr',
+      label: '15 ltr',
+    },
+    {
+      value: '15 ltr recycle',
+      label: '15 ltr recycle',
+    },
+  ];
+
+  const expenses = [
+    {
+      value: null,
+      label: '',
+    },
+    {
+      value: 'Electric Bill',
+      label: 'Electric Bill',
+    },
+    {
+      value: 'Bag',
+      label: 'Bag',
+    },
+    {
+      value: 'Machinary',
+      label: 'Machinary',
+    },
+    {
+      value: 'Other',
+      label: 'Other',
+    },
+  ];
+
+  const validationData = {
+    name: {
+      isValid: true,
+      errorMsg: '',
+    },
+    mobile: {
+      isValid: true,
+      errorMsg: '',
+    },
+    quantity: {
+      isValid: true,
+      errorMsg: '',
+    },
+    quintal: {
+      isValid: true,
+      errorMsg: '',
+    },
+    rate: {
+      isValid: true,
+      errorMsg: '',
+    },
+    transport: {
+      isValid: true,
+      errorMsg: '',
+    },
+    amount: {
+      isValid: true,
+      errorMsg: '',
+    },
+    paid: {
+      isValid: true,
+      errorMsg: '',
+    },
+    containerType: {
+      isValid: true,
+      errorMsg: '',
+    },
+    expenseType: {
+      isValid: true,
+      errorMsg: '',
+    },
+    all: {
+      isValid: true,
+      errorMsg: '',
+    },
   };
 
   const [formData, setFormData] = useState(emptyState);
@@ -47,6 +141,10 @@ const Input = () => {
     ten: 0,
     five: 0,
   });
+
+  const [validate, setValidte] = useState(validationData);
+
+  const [disableSave, setDisableSave] = useState();
 
   const inputContext = useContext(InputContext);
   const employeeListContext = useContext(EmployeeListContext);
@@ -73,43 +171,36 @@ const Input = () => {
     if (type === 'payments') loadEmployees();
   }, [type, loadInput, records]);
 
-  const containers = [
-    {
-      value: '5 ltr',
-      label: '5 ltr',
-    },
-    {
-      value: '10 ltr',
-      label: '10 ltr',
-    },
-    {
-      value: '15 ltr',
-      label: '15 ltr',
-    },
-    {
-      value: '15 ltr recycle',
-      label: '15 ltr recycle',
-    },
-  ];
+  useEffect(() => {
+    const {
+      name,
+      mobile,
+      quantity,
+      rate,
+      transport,
+      amount,
+      paid,
+      expenseType,
+      containerType,
+    } = validate;
+    setDisableSave(
+      !(
+        name.isValid &&
+        mobile.isValid &&
+        quantity.isValid &&
+        rate.isValid &&
+        transport.isValid &&
+        amount.isValid &&
+        paid.isValid &&
+        expenseType.isValid &&
+        containerType.isValid
+      )
+    );
+  }, [validate]);
 
-  const expenses = [
-    {
-      value: 'Electric Bill',
-      label: 'Electric Bill',
-    },
-    {
-      value: 'Bag',
-      label: 'Bag',
-    },
-    {
-      value: 'Machinary',
-      label: 'Machinary',
-    },
-    {
-      value: 'Other',
-      label: 'Other',
-    },
-  ];
+  useEffect(() => {
+    setDisableSave(true);
+  }, [type]);
 
   const onChange = (e) => {
     if (e.target.name === 'quintal' || e.target.name === 'quantity') {
@@ -125,10 +216,269 @@ const Input = () => {
     } else {
       setFormData({ ...formData, [e.target.name]: e.target.value });
     }
+    checkValidation(e.target.name, e.target.value);
+  };
+
+  const checkValidation = (field, value) => {
+    switch (field) {
+      case 'name':
+        const nameRegex = /^[a-zA-Z ]{2,50}$/gm; ///^[a-zA-Z]+([\sa-zA-Z])*[a-zA-Z]+$/gm
+        if (value.match(nameRegex)) {
+          setValidte({
+            ...validate,
+            ['name']: { isValid: true, errorMsg: '' },
+          });
+        } else {
+          setValidte({
+            ...validate,
+            ['name']: {
+              isValid: false,
+              errorMsg: 'please enter a valid name',
+            },
+          });
+        }
+        break;
+      case 'mobile':
+        const mobileRegex = /^\d{10}$/;
+        if (value.match(mobileRegex)) {
+          setValidte({
+            ...validate,
+            ['mobile']: { isValid: true, errorMsg: '' },
+          });
+        } else {
+          setValidte({
+            ...validate,
+            ['mobile']: {
+              isValid: false,
+              errorMsg: 'mobile number need to be 10 digits',
+            },
+          });
+        }
+        break;
+      case 'quantity':
+        const quantityRegex = /^(?=.+)(?:[1-9]\d*|0)?(?:\.\d+)?$/; // positiv decimal number
+        if (value.match(quantityRegex)) {
+          setValidte({
+            ...validate,
+            ['quantity']: { isValid: true, errorMsg: '' },
+          });
+        } else {
+          setValidte({
+            ...validate,
+            ['quantity']: {
+              isValid: false,
+              errorMsg: 'please fill valid value',
+            },
+          });
+        }
+        break;
+      case 'quintal':
+        const quintalRegex = /^(?=.+)(?:[1-9]\d*|0)?(?:\.\d+)?$/; // positive decimal number
+        if (value.match(quintalRegex)) {
+          setValidte({
+            ...validate,
+            ['quintal']: { isValid: true, errorMsg: '' },
+          });
+        } else {
+          setValidte({
+            ...validate,
+            ['quintal']: {
+              isValid: false,
+              errorMsg: 'please fill valid value',
+            },
+          });
+        }
+        break;
+      case 'rate':
+        const rateRegex = /^(?=.+)(?:[1-9]\d*|0)?(?:\.\d+)?$/; // positive decimal number
+        if (value.match(rateRegex)) {
+          setValidte({
+            ...validate,
+            ['rate']: { isValid: true, errorMsg: '' },
+          });
+        } else {
+          setValidte({
+            ...validate,
+            ['rate']: {
+              isValid: false,
+              errorMsg: 'please fill valid rate',
+            },
+          });
+        }
+        break;
+      case 'transport':
+        const transportRegex = /^(?=.+)(?:[1-9]\d*|0)?(?:\.\d+)?$/; // positive decimal number
+        if (value.match(transportRegex)) {
+          setValidte({
+            ...validate,
+            ['transport']: { isValid: true, errorMsg: '' },
+          });
+        } else {
+          setValidte({
+            ...validate,
+            ['transport']: {
+              isValid: false,
+              errorMsg: 'please fill valid transport charge',
+            },
+          });
+        }
+        break;
+      case 'amount':
+        const amountRegex = /^(?=.+)(?:[1-9]\d*|0)?(?:\.\d+)?$/; // positive decimal number
+        if (value.match(amountRegex)) {
+          setValidte({
+            ...validate,
+            ['amount']: { isValid: true, errorMsg: '' },
+          });
+        } else {
+          setValidte({
+            ...validate,
+            ['amount']: {
+              isValid: false,
+              errorMsg: 'please fill valid amount charge',
+            },
+          });
+        }
+        break;
+      case 'paid':
+        const paidRegex = /^(?=.+)(?:[1-9]\d*|0)?(?:\.\d+)?$/; // positive decimal number
+        if (
+          value.match(paidRegex) &&
+          parseFloat(value) <= parseFloat(formData.amount)
+        ) {
+          setValidte({
+            ...validate,
+            ['paid']: { isValid: true, errorMsg: '' },
+          });
+        } else {
+          setValidte({
+            ...validate,
+            ['paid']: {
+              isValid: false,
+              errorMsg: 'price should be less or equal to total amount',
+            },
+          });
+        }
+        break;
+      case 'containerType':
+        {
+          setValidte({
+            ...validate,
+            ['containerType']: { isValid: true, errorMsg: '' },
+          });
+        }
+        break;
+      case 'expenseType':
+        {
+          setValidte({
+            ...validate,
+            ['expenseType']: { isValid: true, errorMsg: '' },
+          });
+        }
+        break;
+      default:
+        console.log(field, 'not match to validate');
+    }
+    if (!validate.all.isValid) {
+      setValidte({ ...validate, ['all']: { isValid: true, errorMsg: '' } });
+    }
+  };
+
+  const isValid = (type) => {
+    switch (type) {
+      case 'mustard':
+        return (
+          formData.name &&
+          formData.mobile &&
+          formData.quantity &&
+          formData.rate &&
+          formData.transport &&
+          formData.amount &&
+          formData.paid &&
+          formData.due
+        );
+      case 'oil':
+        return (
+          formData.name &&
+          formData.mobile &&
+          formData.quantity &&
+          formData.rate &&
+          formData.transport &&
+          formData.amount &&
+          formData.paid &&
+          formData.due
+        );
+      case 'containers':
+        return (
+          formData.name &&
+          formData.mobile &&
+          formData.quantity &&
+          formData.rate &&
+          formData.transport &&
+          formData.containerType != '' &&
+          formData.amount &&
+          formData.paid &&
+          formData.due
+        );
+      case 'employees':
+        return formData.name && formData.mobile;
+      case 'payments':
+        return (
+          formData.name &&
+          formData.mobile &&
+          formData.amount &&
+          formData.paid &&
+          formData.due
+        );
+      case 'cake':
+        return (
+          formData.name &&
+          formData.mobile &&
+          formData.quantity &&
+          formData.rate &&
+          formData.transport &&
+          formData.amount &&
+          formData.paid &&
+          formData.due
+        );
+      case 'other':
+        return formData.amount && formData.expenseType;
+      default: {
+        console.warn(type, 'not match on submit for validation');
+        return false;
+      }
+    }
   };
 
   const onSubmit = (e) => {
     e.preventDefault();
+    if (!isValid(type)) {
+      // setDisableSave(true);
+      if (type === 'containers' && formData.containerType === '') {
+        setValidte({
+          ...validate,
+          ['containerType']: {
+            isValid: false,
+            errorMsg: 'container type is empty',
+          },
+        });
+      } else if (type === 'other' && formData.expenseType === '') {
+        setValidte({
+          ...validate,
+          ['expenseType']: {
+            isValid: false,
+            errorMsg: 'expanse type is empty',
+          },
+        });
+      } else {
+        setValidte({
+          ...validate,
+          ['all']: { isValid: false, errorMsg: 'some fields are empty' },
+        });
+      }
+      console.warn(type, ' validation on Submit');
+      return;
+    }
     if (loadInput) {
       updateInput(formData, type);
     } else {
@@ -139,6 +489,7 @@ const Input = () => {
 
   const clearAll = () => {
     setFormData(emptyState);
+    setValidte(validationData);
     clearRecords();
     clearLoadInput();
     setWeight({
@@ -169,10 +520,17 @@ const Input = () => {
     });
   };
 
+  const isValidNumber = (value) => {
+    return (
+      typeof parseFloat(value) === 'number' &&
+      Number.isNaN(parseFloat(value)) === false
+    );
+  };
+
   const useStyles = makeStyles(() => ({
     dataBox: {
       borderRadius: '8px',
-      padding: '15px 15px 4rem 15px',
+      padding: '15px 15px 1rem 15px',
       backgroundColor: '#fff',
       color: '#999',
       boxShadow:
@@ -181,17 +539,21 @@ const Input = () => {
     inputField: {
       marginTop: '1rem',
     },
+    btnContainer: {
+      overflow: 'hidden',
+    },
     btn: {
       float: 'right',
       marginLeft: '1rem',
       marginTop: '1rem',
     },
-    uploadField: {
-      marginTop: '1rem',
-      padding: '12px',
-      width: '100%',
-      border: '1px #ccc solid',
-      borderRadius: '4px',
+    radioContainer: {
+      display: 'inline',
+      marginLeft: '8px',
+    },
+    radio: {
+      padding: '13px 0',
+      margin: '0',
     },
   }));
 
@@ -207,10 +569,12 @@ const Input = () => {
         ) && (
           <TextField
             fullWidth
+            error={!validate.name.isValid}
+            helperText={validate.name.errorMsg}
             onChange={onChange}
             className={classes.inputField}
-            id='outlined-text'
-            value={formData.name}
+            id='outlined-error-helper-text'
+            value={formData.name ? formData.name : ''}
             label='Name'
             name='name'
             type='text'
@@ -233,10 +597,12 @@ const Input = () => {
         ].includes(type) && (
           <TextField
             fullWidth
+            error={!validate.mobile.isValid}
+            helperText={validate.mobile.errorMsg}
             onChange={onChange}
             className={classes.inputField}
-            id='outlined-number'
-            value={formData.mobile}
+            id='outlined-error-helper-number'
+            value={formData.mobile ? formData.mobile : ''}
             label='Phone'
             name='mobile'
             type='number'
@@ -247,7 +613,7 @@ const Input = () => {
           />
         )}
 
-        {/* quantity */}
+        {/* quantity validation validation*/}
         {['mustard', 'oil', 'cake', 'containers'].includes(type) && (
           <FormControl
             fullWidth
@@ -258,7 +624,8 @@ const Input = () => {
               {type !== 'containers' ? 'Weight(kg)' : 'Quantity'}
             </FormHelperText>
             <OutlinedInput
-              id='outlined-adornment-weight'
+              error={!validate.quantity.isValid}
+              id='outlined-error-helper-adornment-weight'
               onChange={onChange}
               value={weight.kg}
               name='quantity'
@@ -269,6 +636,9 @@ const Input = () => {
               }}
               labelWidth={0}
             />
+            <FormHelperText error id='outlined-weight-helper-text'>
+              {validate.quantity.errorMsg}
+            </FormHelperText>
           </FormControl>
         )}
 
@@ -282,7 +652,8 @@ const Input = () => {
               Weight(Quintal)
             </FormHelperText>
             <OutlinedInput
-              id='outlined-adornment-weight'
+              error={!validate.quintal.isValid}
+              id='outlined-error-helper-adornment-weight'
               onChange={onChange}
               value={weight.qtl}
               name='quintal'
@@ -293,10 +664,13 @@ const Input = () => {
               }}
               labelWidth={0}
             />
+            <FormHelperText error id='outlined-weight-helper-text'>
+              {validate.quintal.errorMsg}
+            </FormHelperText>
           </FormControl>
         )}
 
-        {/* rate */}
+        {/* rate validation */}
         {['mustard', 'oil', 'containers', 'cake'].includes(type) && (
           <FormControl
             fullWidth
@@ -305,8 +679,10 @@ const Input = () => {
           >
             <InputLabel htmlFor='outlined-adornment-amount'>Rate</InputLabel>
             <OutlinedInput
-              id='outlined-adornment-amount'
-              value={formData.rate}
+              error={!validate.rate.isValid}
+              // need ERROR Text
+              id='outlined-error-helper-adornment-amount'
+              value={formData.rate ? formData.rate : ''}
               onChange={onChange}
               name='rate'
               startAdornment={
@@ -314,10 +690,13 @@ const Input = () => {
               }
               labelWidth={34}
             />
+            <FormHelperText error id='outlined-weight-helper-text'>
+              {validate.rate.errorMsg}
+            </FormHelperText>
           </FormControl>
         )}
 
-        {/* transport */}
+        {/* transport validation */}
         {['mustard', 'oil', 'containers', 'cake'].includes(type) && (
           <FormControl
             fullWidth
@@ -328,8 +707,9 @@ const Input = () => {
               Transport Charge
             </InputLabel>
             <OutlinedInput
-              id='outlined-adornment-amount'
-              value={formData.transport}
+              error={!validate.transport.isValid}
+              id='outlined-error-helper-adornment-amount'
+              value={formData.transport ? formData.transport : ''}
               onChange={onChange}
               name='transport'
               startAdornment={
@@ -337,6 +717,9 @@ const Input = () => {
               }
               labelWidth={130}
             />
+            <FormHelperText error id='outlined-weight-helper-text'>
+              {validate.transport.errorMsg}
+            </FormHelperText>
           </FormControl>
         )}
 
@@ -356,7 +739,7 @@ const Input = () => {
             id='outlined-multiline-static'
             label='Address'
             name='address'
-            value={formData.address}
+            value={formData.address ? formData.address : ''}
             multiline
             rows={2}
             defaultValue=''
@@ -378,7 +761,6 @@ const Input = () => {
             SelectProps={{
               native: true,
             }}
-            helperText='Please select container type'
             variant='outlined'
           >
             {containers.map((option) => (
@@ -409,13 +791,17 @@ const Input = () => {
               value={
                 (formData.amount = (
                   (parseFloat(
-                    formData.quantity === '' ? 0 : formData.quantity
+                    isValidNumber(formData.quantity) ? formData.quantity : 0
                   ) +
                     containersCount.fifteen * 15 +
                     containersCount.ten * 10 +
                     containersCount.five * 5) *
-                    parseFloat(formData.rate === '' ? 0 : formData.rate) +
-                  parseFloat(formData.transport === '' ? 0 : formData.transport)
+                    parseFloat(
+                      isValidNumber(formData.rate) ? formData.rate : 0
+                    ) +
+                  parseFloat(
+                    isValidNumber(formData.transport) ? formData.transport : 0
+                  )
                 ).toFixed(2))
               }
               readOnly
@@ -438,8 +824,9 @@ const Input = () => {
               Total Amount
             </InputLabel>
             <OutlinedInput
+              error={!validate.amount.isValid}
               id='outlined-adornment-amount'
-              value={formData.amount}
+              value={formData.amount ? formData.amount : ''}
               onChange={onChange}
               name='amount'
               startAdornment={
@@ -447,6 +834,9 @@ const Input = () => {
               }
               labelWidth={90}
             />
+            <FormHelperText error id='outlined-weight-helper-text'>
+              {validate.amount.errorMsg}
+            </FormHelperText>
           </FormControl>
         )}
 
@@ -464,7 +854,6 @@ const Input = () => {
             SelectProps={{
               native: true,
             }}
-            helperText='Please select other expense type'
             variant='outlined'
           >
             {expenses.map((option) => (
@@ -475,7 +864,7 @@ const Input = () => {
           </TextField>
         )}
 
-        {/* payed */}
+        {/* payed  vaidation */}
         {['mustard', 'oil', 'containers', 'payments', 'cake'].includes(
           type
         ) && (
@@ -488,8 +877,10 @@ const Input = () => {
               Paid Amount
             </InputLabel>
             <OutlinedInput
-              id='outlined-adornment-amount'
-              value={formData.paid}
+              error={!validate.paid.isValid}
+              // nedd ERROR Text
+              id='outlined-error-helper-adornment-amount'
+              value={formData.paid ? formData.paid : ''}
               name='paid'
               onChange={onChange}
               startAdornment={
@@ -497,6 +888,9 @@ const Input = () => {
               }
               labelWidth={90}
             />
+            <FormHelperText error id='outlined-weight-helper-text'>
+              {validate.paid.errorMsg}
+            </FormHelperText>
           </FormControl>
         )}
 
@@ -516,8 +910,10 @@ const Input = () => {
               id='outlined-adornment-amount'
               value={
                 (formData.due = (
-                  parseFloat(formData.amount === '' ? 0 : formData.amount) -
-                  parseFloat(formData.paid === '' ? 0 : formData.paid)
+                  parseFloat(
+                    isValidNumber(formData.amount) ? formData.amount : 0
+                  ) -
+                  parseFloat(isValidNumber(formData.paid) ? formData.paid : 0)
                 ).toFixed(2))
               }
               name='due'
@@ -545,7 +941,7 @@ const Input = () => {
             fullWidth
             onChange={onChange}
             name='desc'
-            value={formData.desc}
+            value={formData.desc ? formData.desc : ''}
             className={classes.inputField}
             id='outlined-multiline-static'
             label='Description'
@@ -559,18 +955,60 @@ const Input = () => {
         {/* Payment Calender */}
         {['payments'].includes(type) && <PaymentCalender />}
 
-        {/* Button */}
-        <Button variant='contained' className={classes.btn}>
-          Clear
-        </Button>
-        <Button
-          variant='contained'
-          color='primary'
-          onClick={onSubmit}
-          className={classes.btn}
-        >
-          Save
-        </Button>
+        {/* error msg on submit */}
+        <FormHelperText error id='outlined-weight-helper-text'>
+          {!validate.containerType.isValid
+            ? validate.containerType.errorMsg
+            : ''}
+          {!validate.expenseType.isValid ? validate.expenseType.errorMsg : ''}
+          {!validate.all.isValid ? validate.all.errorMsg : ''}
+        </FormHelperText>
+
+        {/* buy or sell */}
+        <div className={classes.btnContainer}>
+          {['mustard', 'oil'].includes(type) && (
+            <RadioGroup
+              className={classes.radioContainer}
+              row
+              onChange={onChange}
+              aria-label='position'
+              name='transactionType'
+              // defaultValue={'buy'}
+              value={formData.transactionType}
+            >
+              <FormControlLabel
+                className={classes.radio}
+                value='buy'
+                control={<Radio color='primary' />}
+                label='Buy'
+              />
+              <FormControlLabel
+                className={classes.radio}
+                value='sell'
+                control={<Radio color='primary' />}
+                label='Sell'
+              />
+            </RadioGroup>
+          )}
+
+          {/* Button */}
+          <Button
+            variant='contained'
+            onClick={clearAll}
+            className={classes.btn}
+          >
+            Reset
+          </Button>
+          <Button
+            disabled={disableSave}
+            variant='contained'
+            color='primary'
+            onClick={onSubmit}
+            className={classes.btn}
+          >
+            Save
+          </Button>
+        </div>
       </form>
     </div>
   );

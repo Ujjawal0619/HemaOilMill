@@ -21,6 +21,12 @@ class Mustard(models.Model):
         max_digits=10, decimal_places=2, default=0.00)
     address = models.CharField(max_length=200, blank=True)
     desc = models.CharField(max_length=300, blank=True)
+    amount = models.DecimalField(
+        max_digits=10, decimal_places=2, default=0.00)
+    paid = models.DecimalField(
+        max_digits=10, decimal_places=2, default=0.00)
+    due = models.DecimalField(
+        max_digits=10, decimal_places=2, default=0.00)
 
     def __str__(self):
         return self.name
@@ -40,6 +46,12 @@ class Container(models.Model):
         max_length=200, blank=True, default='Not Available')
     desc = models.CharField(max_length=300, blank=True,
                             default='No Descriptions')
+    amount = models.DecimalField(
+        max_digits=10, decimal_places=2, default=0.00)
+    paid = models.DecimalField(
+        max_digits=10, decimal_places=2, default=0.00)
+    due = models.DecimalField(
+        max_digits=10, decimal_places=2, default=0.00)
 
     def __str__(self):
         return self.containerType
@@ -93,6 +105,12 @@ class Oil(models.Model):
         max_digits=10, decimal_places=2, default=0.00)
     address = models.CharField(max_length=200, blank=True)
     desc = models.CharField(max_length=300, blank=True)
+    amount = models.DecimalField(
+        max_digits=10, decimal_places=2, default=0.00)
+    paid = models.DecimalField(
+        max_digits=10, decimal_places=2, default=0.00)
+    due = models.DecimalField(
+        max_digits=10, decimal_places=2, default=0.00)
 
     def __str__(self):
         return self.name
@@ -108,6 +126,12 @@ class MustardCake(models.Model):
         max_digits=10, decimal_places=2, default=0.00)
     address = models.CharField(max_length=200, blank=True)
     desc = models.CharField(max_length=300, blank=True)
+    amount = models.DecimalField(
+        max_digits=10, decimal_places=2, default=0.00)
+    paid = models.DecimalField(
+        max_digits=10, decimal_places=2, default=0.00)
+    due = models.DecimalField(
+        max_digits=10, decimal_places=2, default=0.00)
 
     def __str__(self):
         return self.name
@@ -119,12 +143,7 @@ class Dues(models.Model):
     name = models.CharField(max_length=100, default='Name Not Available')
     mobile = models.CharField(max_length=10, default='Not Available')
     date = models.DateTimeField(auto_now_add=True)
-    total = models.DecimalField(
-        max_digits=10, decimal_places=2, default=0.00)
-    paid = models.DecimalField(
-        max_digits=10, decimal_places=2, default=0.00)
-    due = models.DecimalField(
-        max_digits=10, decimal_places=2, default=0.00)
+
     isClear = models.BooleanField(default=False)
     desc = models.CharField(max_length=300, blank=True)
 

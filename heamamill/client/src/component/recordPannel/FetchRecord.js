@@ -14,13 +14,19 @@ import Button from '@material-ui/core/Button';
 const FetchRecord = () => {
   const recordContext = useContext(RecordContext);
   const inputContext = useContext(InputContext);
-  const { records, getRecords, loadInputForm, deleteRecord, loadInput } =
-    recordContext;
+  const {
+    records,
+    getRecords,
+    loadInputForm,
+    deleteRecord,
+    loadInput,
+    trigger,
+  } = recordContext;
   const { type } = inputContext;
 
   useEffect(() => {
     getRecords(type);
-  }, [type, loadInput]);
+  }, [type, trigger]);
 
   const useStyles = makeStyles(() => ({
     dataBox: {
@@ -74,7 +80,6 @@ const FetchRecord = () => {
     deleteRecord(type, e.currentTarget.value);
     // clearRecords();
     // fetch updated reocrd (inside input.js according to type)
-    console.log(e.currentTarget.value);
   };
 
   return (

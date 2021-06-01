@@ -19,11 +19,13 @@ export default (state, action) => {
         records: state.records?.filter(
           (record) => record.id !== action.payload
         ),
+        trigger: !state.trigger,
       };
     case CLEAR_RECORDS:
       return {
         ...state,
         records: null,
+        trigger: !state.trigger,
       };
     case UPDATE:
       return {
@@ -31,6 +33,7 @@ export default (state, action) => {
         loadInput: state.records.filter((record) => {
           return record.id == action.payload;
         })[0],
+        trigger: !state.trigger,
       };
     case CLEAR_LOAD_INPUT:
       return {

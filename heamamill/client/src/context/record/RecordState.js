@@ -15,12 +15,14 @@ const RecordState = (props) => {
   const initialState = {
     records: null,
     loadInput: null,
+    trigger: false,
   };
 
   const [state, dispatch] = useReducer(RecordReducer, initialState);
 
   // Methods goes here
   const getRecords = async (type) => {
+    if (!type) type = 'mustard';
     const accessToken = localStorage.getItem('token');
     // const config = {
     //   headers: {
@@ -38,7 +40,6 @@ const RecordState = (props) => {
           return Promise.reject(err);
         }
       );
-      console.log(type);
       let res = await axios.get(`/api/${type}`);
       if (type === 'payments') {
         try {
@@ -95,6 +96,7 @@ const RecordState = (props) => {
       value={{
         records: state.records,
         loadInput: state.loadInput,
+        trigger: state.trigger,
         getRecords,
         clearRecords,
         loadInputForm,

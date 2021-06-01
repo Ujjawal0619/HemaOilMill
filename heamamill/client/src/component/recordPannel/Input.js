@@ -530,6 +530,7 @@ const Input = () => {
 
   const useStyles = makeStyles(() => ({
     dataBox: {
+      // minWidth: '23rem',
       borderRadius: '8px',
       padding: '15px 15px 1rem 15px',
       backgroundColor: '#fff',

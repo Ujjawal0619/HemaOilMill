@@ -9,10 +9,11 @@ import MenuIcon from '@material-ui/icons/Menu';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import AuthContext from '../../context/auth/authContext';
 import CenteredGrid from '../recordPannel/CenteredGrid';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import DrawerItems from './DrawerItems';
+import AuthContext from '../../context/auth/authContext';
+import InputContext from '../../context/input/inputContext';
 
 import * as BsIcons from 'react-icons/bs';
 
@@ -40,13 +41,26 @@ const useStyles = makeStyles((theme) => ({
       display: 'none',
     },
   },
+  heading: {
+    display: 'inline-block',
+    marginLeft: '2rem',
+    borderRadius: '5px',
+    padding: '5px 50px',
+    backgroundColor: '#fff',
+    color: '#3f51b5',
+    fontWeight: '1000',
+    boxShadow:
+      '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
+    textTransform: 'capitalize',
+  },
   // necessary for content to be below app bar
   drawerPaper: {
     width: drawerWidth,
   },
   content: {
-    flexGrow: 1,
-    padding: theme.spacing(3),
+    marginTop: '3.5rem',
+    padding: '24px',
+    overflow: 'hidden',
   },
 }));
 
@@ -56,6 +70,7 @@ function Dashboard(props) {
   const theme = useTheme();
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const authContext = useContext(AuthContext);
+  const inputContext = useContext(InputContext);
 
   useEffect(() => {
     authContext.loadUser();
@@ -91,6 +106,7 @@ function Dashboard(props) {
           <Typography variant='h4' noWrap style={{ margin: '0 auto' }}>
             <BsIcons.BsDropletHalf style={{ marginRight: '1rem' }} />
             <strong> HEMA OIL MILL</strong>
+            <h6 className={classes.heading}>{inputContext.type}</h6>
           </Typography>
         </Toolbar>
       </AppBar>
@@ -126,8 +142,7 @@ function Dashboard(props) {
         </Hidden>
       </nav>
 
-      {/* Data showcase */}
-
+      {/* input & record list */}
       <main className={classes.content}>
         <CenteredGrid />
       </main>

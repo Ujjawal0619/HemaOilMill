@@ -42,6 +42,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   heading: {
+    fontSize: '1rem',
     display: 'inline-block',
     marginLeft: '2rem',
     borderRadius: '5px',

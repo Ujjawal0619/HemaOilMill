@@ -8,9 +8,8 @@ import EmployeeListContext from '../../../context/employeeList/employeeListConte
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
-    margin: theme.spacing(1),
+    marginTop: '1rem',
     width: '100%',
-    margin: 'auto',
   },
 }));
 

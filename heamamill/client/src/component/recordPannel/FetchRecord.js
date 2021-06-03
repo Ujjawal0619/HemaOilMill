@@ -10,18 +10,13 @@ import Paper from '@material-ui/core/Paper';
 import RecordContext from '../../context/record/recordContext';
 import InputContext from '../../context/input/inputContext';
 import Button from '@material-ui/core/Button';
+import Fade from '@material-ui/core/Fade';
 
 const FetchRecord = () => {
   const recordContext = useContext(RecordContext);
   const inputContext = useContext(InputContext);
-  const {
-    records,
-    getRecords,
-    loadInputForm,
-    deleteRecord,
-    loadInput,
-    trigger,
-  } = recordContext;
+  const { records, getRecords, loadInputForm, deleteRecord, trigger } =
+    recordContext;
   const { type } = inputContext;
 
   useEffect(() => {
@@ -113,6 +108,7 @@ const FetchRecord = () => {
                   )}
                 </TableRow>
               </TableHead>
+
               <TableBody>
                 {records &&
                   records.map((obj) => (

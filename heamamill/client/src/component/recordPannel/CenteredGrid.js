@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import Input from './Input';
 import FetchRecord from './FetchRecord';
 import Grid from '@material-ui/core/Grid';
@@ -10,12 +10,10 @@ export default function CenteredGrid() {
 
   return (
     <Grid container spacing={2}>
-      {type !== 'dues' && (
-        <Grid item xs={12} sm={4}>
-          <Input />
-        </Grid>
-      )}
-      <Grid item xs={12} sm={type === 'dues' ? 12 : 8}>
+      <Grid item xs={12}>
+        <Input />
+      </Grid>
+      <Grid item xs={12}>
         <FetchRecord />
       </Grid>
     </Grid>

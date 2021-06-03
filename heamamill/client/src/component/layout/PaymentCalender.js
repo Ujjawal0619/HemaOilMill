@@ -107,9 +107,17 @@ const useStyles = makeStyles({
     textAlign: 'center',
     fontSize: 12,
     textTransform: 'uppercase',
-
     fontWeight: 1000,
     color: '#888',
+  },
+  cell: {
+    height: '1rem',
+    borderRadius: '25px',
+    background: ' #ddd',
+  },
+  MuiLinearProgressBar: {
+    borderRadius: '25px',
+    height: '1rem',
   },
 });
 
@@ -121,7 +129,12 @@ export default function PaymentCalender() {
       {arr.map((ele, i) => (
         <div className={classes.month}>
           <p className={classes.heading}>{ele.month}</p>
-          <BorderLinearProgress variant='determinate' value={i * 10 - 10} />
+          <BorderLinearProgress
+            className={classes.cell}
+            classes={classes.MuiLinearProgressBar}
+            variant='determinate'
+            value={i * 10 - 10}
+          />
         </div>
       ))}
     </div>

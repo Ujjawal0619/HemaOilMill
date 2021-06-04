@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import Input from './Input';
 import FetchRecord from './FetchRecord';
 import Grid from '@material-ui/core/Grid';
+import Fade from '@material-ui/core/Fade';
 import InputContext from '../../context/input/inputContext';
 
 export default function CenteredGrid() {
@@ -10,12 +11,16 @@ export default function CenteredGrid() {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12}>
-        <Input />
-      </Grid>
-      <Grid item xs={12}>
-        <FetchRecord />
-      </Grid>
+      <Fade timeout={1000} in={true}>
+        <Grid item xs={12}>
+          <Input />
+        </Grid>
+      </Fade>
+      <Fade timeout={1000} in={true}>
+        <Grid item xs={12}>
+          <FetchRecord />
+        </Grid>
+      </Fade>
     </Grid>
   );
 }

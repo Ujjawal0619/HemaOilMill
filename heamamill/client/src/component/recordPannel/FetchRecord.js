@@ -10,7 +10,6 @@ import Paper from '@material-ui/core/Paper';
 import RecordContext from '../../context/record/recordContext';
 import InputContext from '../../context/input/inputContext';
 import Button from '@material-ui/core/Button';
-import Fade from '@material-ui/core/Fade';
 
 const FetchRecord = () => {
   const recordContext = useContext(RecordContext);
@@ -81,7 +80,11 @@ const FetchRecord = () => {
     <div className={classes.dataBox}>
       <TableContainer component={Paper} className={classes.tableContainer}>
         <Table className={classes.table} aria-label='caption table'>
-          <caption>A basic table example with a caption</caption>
+          <caption>
+            {records
+              ? `last ${records.length} records.`
+              : 'no data in this field'}
+          </caption>
           {head ? (
             <>
               <TableHead>
@@ -106,13 +109,15 @@ const FetchRecord = () => {
                   ) : (
                     ''
                   )}
+                  <TableCell align='center'>{'Update'}</TableCell>
+                  <TableCell align='center'>{'Delete'}</TableCell>
                 </TableRow>
               </TableHead>
 
               <TableBody>
                 {records &&
                   records.map((obj) => (
-                    <TableRow key={obj.id}>
+                    <TableRow>
                       <TableCell>{obj.date && formateDate(obj.date)}</TableCell>
                       <TableCell>{obj.name && obj.name}</TableCell>
                       <TableCell>
@@ -158,7 +163,7 @@ const FetchRecord = () => {
                       ) : (
                         ''
                       )}
-                      <TableCell>
+                      <TableCell align='center'>
                         <Button
                           value={obj.id}
                           variant='contained'
@@ -168,7 +173,7 @@ const FetchRecord = () => {
                           Edit
                         </Button>
                       </TableCell>
-                      <TableCell>
+                      <TableCell align='center'>
                         <Button
                           variant='contained'
                           color='secondary'

@@ -21,6 +21,7 @@ import Grid from '@material-ui/core/Grid';
 
 const Input = () => {
   const emptyState = {
+    type: null,
     name: null,
     mobile: null,
     quantity: null,
@@ -166,17 +167,16 @@ const Input = () => {
       setContainersCount(loadInput.containerType); // object type is needed
       setFormData(loadInput);
     } else {
-      setFormData({
-        ...emptyState,
-        ['containerType']: type === 'oil' ? initContainersCount : '',
-      });
       setWeight({
         kg: '',
         qtl: '',
       });
       setContainersCount(initContainersCount);
+      setFormData({ ...formData, ['type']: type });
     }
-    if (type === 'payments') loadEmployees();
+    if (type === 'payments') {
+      loadEmployees();
+    }
     setValidte(validationData);
   }, [type, loadInput, records]);
 
@@ -210,6 +210,14 @@ const Input = () => {
   useEffect(() => {
     setDisableSave(true);
   }, [type]);
+
+  useEffect(() => {
+    if (type === 'oil')
+      setFormData({
+        ...formData,
+        ['containerType']: containersCount,
+      });
+  }, [containersCount]);
 
   const onChange = (e) => {
     if (e.target.name === 'quintal' || e.target.name === 'quantity') {

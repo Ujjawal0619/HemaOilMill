@@ -40,7 +40,9 @@ export default function EmployeesList() {
         >
           <MenuItem value=''>Select Employee</MenuItem>
           {employees?.map((emp) => (
-            <MenuItem value={emp.id}>{emp.name}</MenuItem>
+            <MenuItem value={emp.id} key={emp.id}>
+              {emp.name}
+            </MenuItem>
           ))}
         </Select>
       </FormControl>

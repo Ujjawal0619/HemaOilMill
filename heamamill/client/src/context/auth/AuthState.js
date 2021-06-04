@@ -42,13 +42,13 @@ const AuthState = (props) => {
 
   // Login User
   const login = async (formData) => {
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    };
+    // const config = {
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    // };
     try {
-      const res = await axios.post('/api/gettoken', formData, config);
+      const res = await axios.post('/api/gettoken', formData);
       dispatch({
         type: LOGIN_SUCCESS,
         payload: res,

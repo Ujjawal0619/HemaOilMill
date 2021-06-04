@@ -18,20 +18,8 @@ const EmployeeListState = (props) => {
   const accessToken = localStorage.getItem('token');
 
   const loadEmployees = async () => {
-    const accessToken = localStorage.getItem('token');
     try {
-      axios.interceptors.request.use(
-        (config) => {
-          config.headers.authorization = `Bearer ${accessToken}`;
-          return config;
-        },
-        (err) => {
-          return Promise.reject(err);
-        }
-      );
-
       const res = await axios.get(`/api/employees`);
-
       dispatch({ type: EMP_LOADED, payload: res.data });
     } catch (err) {
       console.log(err);
@@ -40,18 +28,7 @@ const EmployeeListState = (props) => {
 
   const setEmp = async (id) => {
     try {
-      axios.interceptors.request.use(
-        (config) => {
-          config.headers.authorization = `Bearer ${accessToken}`;
-          return config;
-        },
-        (err) => {
-          return Promise.reject(err);
-        }
-      );
-
       const res = axios.get(`/api/employees/${id}`);
-
       dispatch({ type: SET_EMP, payload: res.data });
     } catch (err) {
       console.log(err);

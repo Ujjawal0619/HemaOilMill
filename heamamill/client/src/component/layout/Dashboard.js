@@ -62,6 +62,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: '3.5rem',
     padding: '24px',
     overflow: 'hidden',
+    width: '100vw',
   },
 }));
 

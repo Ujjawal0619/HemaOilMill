@@ -127,11 +127,11 @@ export default function PaymentCalender() {
   return (
     <div className={classes.root}>
       {arr.map((ele, i) => (
-        <div className={classes.month}>
+        <div key={i} className={classes.month}>
           <p className={classes.heading}>{ele.month}</p>
           <BorderLinearProgress
             className={classes.cell}
-            classes={classes.MuiLinearProgressBar}
+            // classes={classes.MuiLinearProgressBar}
             variant='determinate'
             value={i * 10 - 10}
           />

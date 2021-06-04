@@ -23,41 +23,12 @@ const RecordState = (props) => {
   // Methods goes here
   const getRecords = async (type) => {
     if (!type) type = 'mustard';
-    const accessToken = localStorage.getItem('token');
-    // const config = {
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     Authorization: `Bearer ${accessToken}`,
-    //   },
-    // };
+    // const accessToken = localStorage.getItem('token');
+    // console.log(accessToken);
+    // axios.defaults.headers.common['Authorization'] = accessToken;
     try {
-      axios.interceptors.request.use(
-        (config) => {
-          config.headers.authorization = `Bearer ${accessToken}`;
-          return config;
-        },
-        (err) => {
-          return Promise.reject(err);
-        }
-      );
-      let res = await axios.get(`/api/${type}`);
-      if (type === 'payments') {
-        try {
-          const emp = await axios.get(`/api/employees`);
-          const idName = new Map();
+      const res = await axios.get(`/api/${type}`);
 
-          emp.data.map((person) => {
-            idName.set(person.id, person.name);
-          });
-
-          res.data.forEach((payment) => {
-            payment.name = idName.get(parseInt(payment.employee));
-          });
-        } catch (err) {
-          console.log(err);
-        }
-      }
-      // debug
       dispatch({ type: LOAD_RECORD, payload: res.data });
     } catch (err) {
       localStorage.removeItem('token');

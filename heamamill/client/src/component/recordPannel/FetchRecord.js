@@ -72,6 +72,7 @@ const FetchRecord = () => {
 
   const onDelete = (e) => {
     deleteRecord(type, e.currentTarget.value);
+    e.disable = true;
     // clearRecords();
     // fetch updated reocrd (inside input.js according to type)
   };

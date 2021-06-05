@@ -23,9 +23,6 @@ const RecordState = (props) => {
   // Methods goes here
   const getRecords = async (type) => {
     if (!type) type = 'mustard';
-    // const accessToken = localStorage.getItem('token');
-    // console.log(accessToken);
-    // axios.defaults.headers.common['Authorization'] = accessToken;
     try {
       const res = await axios.get(`/api/${type}`);
 

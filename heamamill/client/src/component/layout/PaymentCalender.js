@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
@@ -92,6 +92,7 @@ const arr = [
     payment: 2050,
   },
 ];
+
 const useStyles = makeStyles({
   root: {
     display: 'flex',
@@ -119,24 +120,57 @@ const useStyles = makeStyles({
     borderRadius: '25px',
     height: '1rem',
   },
+  advance: {
+    color: '#fafafa',
+    background: '#00c300',
+    padding: '2px 5px',
+    borderRadius: '4px',
+    fontWeight: '800',
+  },
+  due: {
+    color: '#fafafa',
+    background: '#ff5555',
+    padding: '2px 5px',
+    borderRadius: '4px',
+    fontWeight: '800',
+  },
 });
 
 export default function PaymentCalender() {
   const classes = useStyles();
-
+  const [prevStatus, setPrevStatus] = useState({
+    advance: 0,
+    due: 1000,
+  });
   return (
-    <div className={classes.root}>
-      {arr.map((ele, i) => (
-        <div key={i} className={classes.month}>
-          <p className={classes.heading}>{ele.month}</p>
-          <BorderLinearProgress
-            className={classes.cell}
-            // classes={classes.MuiLinearProgressBar}
-            variant='determinate'
-            value={i * 10 - 10}
-          />
-        </div>
-      ))}
-    </div>
+    <>
+      <div className={classes.root}>
+        {arr.map((ele, i) => (
+          <div key={i} className={classes.month}>
+            <p className={classes.heading}>{ele.month}</p>
+            <BorderLinearProgress
+              className={classes.cell}
+              // classes={classes.MuiLinearProgressBar}
+              variant='determinate'
+              value={i * 10 - 10}
+            />
+          </div>
+        ))}
+      </div>
+      <div style={{ marginLeft: '1.5rem' }}>
+        {prevStatus.advance !== 0 && (
+          <p>
+            Advance payment:{' '}
+            <span className={classes.advance}>{prevStatus.advance} ₹</span>
+          </p>
+        )}
+        {prevStatus.due !== 0 && (
+          <p>
+            Due payment: <span className={classes.due}>{prevStatus.due} ₹</span>
+          </p>
+        )}
+        {prevStatus.advance === prevStatus.due && <p>All Clear</p>}
+      </div>
+    </>
   );
 }

@@ -14,6 +14,7 @@ import PaymentCalender from '../layout/PaymentCalender';
 import EmployeesList from './inputs/EmployeesList';
 import EmployeeListContext from '../../context/employeeList/employeeListContext';
 import RecordContext from '../../context/record/recordContext';
+import PaymentCalenderContex from '../../context/paymentCalender/paymentCalenderContext';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -29,11 +30,21 @@ const Input = () => {
     transport: null,
     address: null,
     desc: null,
-    containerType: '',
+    container: {
+      type: '',
+      count: {
+        ten: 0,
+        five: 0,
+        fifteen: 0,
+      },
+    },
     transactionType: 'buy',
     employee: null,
+    employeeType: 'daily',
+    active: true,
     amount: null,
     expenseType: '',
+    advance: null,
     paid: null,
     due: null,
   };
@@ -61,10 +72,13 @@ const Input = () => {
     },
   ];
 
-  const initContainersCount = {
-    fifteen: 0,
-    ten: 0,
-    five: 0,
+  const initContainer = {
+    type: '',
+    count: {
+      ten: 0,
+      five: 0,
+      fifteen: 0,
+    },
   };
 
   const expenses = [
@@ -89,6 +103,12 @@ const Input = () => {
       label: 'Other',
     },
   ];
+
+  const initCalender = {
+    advance: 0,
+    due: 0,
+    amount: 0,
+  };
 
   const validationData = {
     name: {
@@ -123,11 +143,19 @@ const Input = () => {
       isValid: true,
       errorMsg: '',
     },
-    containerType: {
+    container: {
       isValid: true,
       errorMsg: '',
     },
     expenseType: {
+      isValid: true,
+      errorMsg: '',
+    },
+    advance: {
+      isValid: true,
+      errorMsg: '',
+    },
+    clearPrev: {
       isValid: true,
       errorMsg: '',
     },
@@ -137,45 +165,56 @@ const Input = () => {
     },
   };
 
+  const [container, setContainer] = useState(initContainer);
+
   const [formData, setFormData] = useState(emptyState);
 
   const [weight, setWeight] = useState({
     kg: '',
     qtl: '',
   });
-
-  const [containersCount, setContainersCount] = useState(initContainersCount);
+  const [calender, setCalender] = useState(initCalender);
 
   const [validate, setValidte] = useState(validationData);
 
   const [disableSave, setDisableSave] = useState();
 
   const inputContext = useContext(InputContext);
-  const employeeListContext = useContext(EmployeeListContext);
   const recordContext = useContext(RecordContext);
+  const paymentCalenderContex = useContext(PaymentCalenderContex);
+  const employeeListContext = useContext(EmployeeListContext);
 
   const { type, postInput, updateInput } = inputContext;
-  const { loadEmployees } = employeeListContext;
   const { loadInput, clearLoadInput, records, clearRecords } = recordContext;
+  const { postPayment, updatePayment, clearCalender } = paymentCalenderContex;
+  const { currentEmp, loadEmployees } = employeeListContext;
 
   useEffect(() => {
     if (loadInput) {
+      if (type === 'oil') {
+        const box = loadInput.container.count;
+        loadInput.amount =
+          loadInput.amount - (box.five + box.ten + box.fifteen);
+      }
       setWeight({
         kg: parseFloat(loadInput.quantity) % 100,
         qtl: Math.floor(parseFloat(loadInput.quantity) / 100),
       });
-      setContainersCount(loadInput.containerType); // object type is needed
+      setContainer({ ...container, ...loadInput.container }); // object type is needed
+
       setFormData(loadInput);
     } else {
       setWeight({
         kg: '',
         qtl: '',
       });
-      setContainersCount(initContainersCount);
+      setContainer(initContainer);
       setFormData({ ...formData, ['type']: type });
-    }
-    if (type === 'payments') {
-      loadEmployees();
+      if (type === 'payments')
+        setFormData({
+          ...formData,
+          ['amount']: currentEmp ? currentEmp.amount : '',
+        });
     }
     setValidte(validationData);
   }, [type, loadInput, records]);
@@ -190,7 +229,8 @@ const Input = () => {
       amount,
       paid,
       expenseType,
-      containerType,
+      container,
+      clearPrev,
     } = validate;
     setDisableSave(
       !(
@@ -202,7 +242,8 @@ const Input = () => {
         amount.isValid &&
         paid.isValid &&
         expenseType.isValid &&
-        containerType.isValid
+        container.isValid &&
+        clearPrev.isValid
       )
     );
   }, [validate]);
@@ -212,12 +253,24 @@ const Input = () => {
   }, [type]);
 
   useEffect(() => {
-    if (type === 'oil')
+    setFormData({
+      ...formData,
+      ['container']: container,
+    });
+  }, [container]);
+
+  useEffect(() => {
+    if (currentEmp) {
       setFormData({
         ...formData,
-        ['containerType']: containersCount,
+        ['amount']: currentEmp.amount - currentEmp.advance + currentEmp.due,
       });
-  }, [containersCount]);
+      setValidte({
+        ...validate,
+        ['clearPrev']: { isValid: true, errorMsg: '' },
+      });
+    }
+  }, [currentEmp]);
 
   const onChange = (e) => {
     if (e.target.name === 'quintal' || e.target.name === 'quantity') {
@@ -230,6 +283,8 @@ const Input = () => {
           parseFloat(kg ? parseFloat(kg) : 0) +
           parseFloat(qtl ? parseFloat(qtl) : 0) * 100,
       });
+    } else if (e.target.name === 'container') {
+      setContainer({ ...container, ['type']: e.target.value });
     } else {
       setFormData({ ...formData, [e.target.name]: e.target.value });
     }
@@ -377,11 +432,11 @@ const Input = () => {
           });
         }
         break;
-      case 'containerType':
+      case 'container':
         {
           setValidte({
             ...validate,
-            ['containerType']: { isValid: true, errorMsg: '' },
+            ['container']: { isValid: true, errorMsg: '' },
           });
         }
         break;
@@ -390,6 +445,23 @@ const Input = () => {
           setValidte({
             ...validate,
             ['expenseType']: { isValid: true, errorMsg: '' },
+          });
+        }
+        break;
+      case 'advance':
+        const advanceRegex = /^(?=.+)(?:[1-9]\d*|0)?(?:\.\d+)?$/; // positive decimal number
+        if (value.match(advanceRegex)) {
+          setValidte({
+            ...validate,
+            ['advance']: { isValid: true, errorMsg: '' },
+          });
+        } else {
+          setValidte({
+            ...validate,
+            ['advance']: {
+              isValid: false,
+              errorMsg: 'advance amount is must',
+            },
           });
         }
         break;
@@ -432,7 +504,7 @@ const Input = () => {
           formData.quantity &&
           formData.rate &&
           formData.transport &&
-          formData.containerType != '' &&
+          (formData.container.type != '' || formData.container.count != null) &&
           formData.amount &&
           formData.paid &&
           formData.due
@@ -441,11 +513,12 @@ const Input = () => {
         return formData.name && formData.mobile;
       case 'payments':
         return (
-          formData.name &&
-          formData.mobile &&
           formData.amount &&
+          formData.advance &&
           formData.paid &&
-          formData.due
+          formData.due &&
+          !currentEmp.advance &&
+          !currentEmp.due
         );
       case 'cake':
         return (
@@ -471,10 +544,10 @@ const Input = () => {
     e.preventDefault();
     if (!isValid(type)) {
       // setDisableSave(true);
-      if (type === 'containers' && formData.containerType === '') {
+      if (type === 'containers' && formData.container.type === '') {
         setValidte({
           ...validate,
-          ['containerType']: {
+          ['container']: {
             isValid: false,
             errorMsg: 'container type is empty',
           },
@@ -487,19 +560,32 @@ const Input = () => {
             errorMsg: 'expanse type is empty',
           },
         });
+      } else if (
+        type === 'payments' &&
+        (currentEmp.advance !== 0 || currentEmp.due !== 0)
+      ) {
+        setValidte({
+          ...validate,
+          ['clearPrev']: {
+            isValid: false,
+            errorMsg: 'please clear adv and due',
+          },
+        });
       } else {
         setValidte({
           ...validate,
           ['all']: { isValid: false, errorMsg: 'some fields are empty' },
         });
       }
-      console.warn(type, ' validation on Submit');
+      console.log(type, ' validation on Submit');
       return;
     }
     if (loadInput) {
-      updateInput(formData, type);
+      if (type === 'payments') updatePayment(formData);
+      else updateInput(formData, type);
     } else {
-      postInput(formData, type);
+      if (type === 'payments') postPayment(formData);
+      else postInput(formData, type);
     }
     clearAll();
   };
@@ -513,19 +599,17 @@ const Input = () => {
       kg: '',
       qtl: '',
     });
-    setContainersCount(initContainersCount);
+    setContainer(initContainer);
+    if (type === 'payments') {
+      setCalender(initCalender); // component leve state in input
+      clearCalender(); // clear the context state to null
+    }
   };
 
-  const updateContainer = (target) => {
-    setContainersCount((obj) => {
-      return {
-        ...obj,
-        [target.name]: target.value
-          ? parseInt(target.value) < 0
-            ? 0
-            : parseInt(target.value)
-          : 0,
-      };
+  const updateContainer = (box) => {
+    setContainer({
+      ...container,
+      ['count']: box,
     });
   };
 
@@ -608,7 +692,6 @@ const Input = () => {
               'mustard',
               'oil',
               'containers',
-              'payments',
               'cake',
               'dues',
               'employees',
@@ -632,7 +715,12 @@ const Input = () => {
             )}
 
             {/* Payment Calender */}
-            {['payments'].includes(type) && <PaymentCalender />}
+            {['payments'].includes(type) && (
+              <PaymentCalender
+                prevStatus={calender}
+                setPrevStatus={setCalender}
+              />
+            )}
 
             {/* quantity validation validation*/}
             {['mustard', 'oil', 'cake', 'containers'].includes(type) && (
@@ -718,33 +806,6 @@ const Input = () => {
                 ))}
               </TextField>
             )}
-
-            {/* custome amount  */}
-            {['other', 'employees'].includes(type) && (
-              <FormControl
-                fullWidth
-                className={classes.inputField}
-                variant='outlined'
-              >
-                <InputLabel htmlFor='outlined-adornment-amount'>
-                  {type === 'employees' ? 'Salary' : 'Amount'}
-                </InputLabel>
-                <OutlinedInput
-                  error={!validate.amount.isValid}
-                  id='outlined-adornment-amount'
-                  value={formData.amount ? formData.amount : ''}
-                  onChange={onChange}
-                  name='amount'
-                  startAdornment={
-                    <InputAdornment position='start'>&#8377;</InputAdornment>
-                  }
-                  labelWidth={50}
-                />
-                <FormHelperText error id='outlined-weight-helper-text'>
-                  {validate.amount.errorMsg}
-                </FormHelperText>
-              </FormControl>
-            )}
           </Grid>
           <Grid item xs={12} sm={4}>
             {/* Employees List */}
@@ -806,14 +867,9 @@ const Input = () => {
             )}
 
             {/* address */}
-            {[
-              'mustard',
-              'oil',
-              'containers',
-              'employees',
-              'payments',
-              'cake',
-            ].includes(type) && (
+            {['mustard', 'oil', 'containers', 'employees', 'cake'].includes(
+              type
+            ) && (
               <TextField
                 fullWidth
                 onChange={onChange}
@@ -829,17 +885,17 @@ const Input = () => {
               />
             )}
 
-            {/* containerType  */}
+            {/* container  */}
             {['containers'].includes(type) && (
               <TextField
                 fullWidth
                 onChange={onChange}
-                name='containerType'
+                name='container'
                 className={classes.inputField}
                 id='outlined-select-currency-native'
                 select
                 label='Container Type'
-                value={formData.containerType}
+                value={container.type}
                 SelectProps={{
                   native: true,
                 }}
@@ -856,19 +912,14 @@ const Input = () => {
             {['oil'].includes(type) && (
               <ContainerInput
                 trigger={updateContainer}
-                containersCount={containersCount}
+                count={container.count}
               />
             )}
 
             {/* amount */}
-            {[
-              'mustard',
-              'oil',
-              'containers',
-              'payments',
-              'cake',
-              'dues',
-            ].includes(type) && (
+            {['mustard', 'oil', 'containers', 'cake', 'dues'].includes(
+              type
+            ) && (
               <FormControl
                 fullWidth
                 className={classes.inputField}
@@ -882,9 +933,9 @@ const Input = () => {
                   value={parseFloat(
                     (formData.amount =
                       (isValidNumber(formData.quantity) +
-                        isValidNumber(containersCount.fifteen) * 15 +
-                        isValidNumber(containersCount.ten) * 10 +
-                        isValidNumber(containersCount.five) * 5) *
+                        isValidNumber(container.count.fifteen) * 15 +
+                        isValidNumber(container.count.ten) * 10 +
+                        isValidNumber(container.count.five) * 5) *
                         isValidNumber(formData.rate) +
                       isValidNumber(formData.transport))
                   ).toFixed(2)}
@@ -895,6 +946,63 @@ const Input = () => {
                   }
                   labelWidth={90}
                 />
+              </FormControl>
+            )}
+
+            {/* custome amount  */}
+            {['other', 'employees', 'payments'].includes(type) && (
+              <FormControl
+                fullWidth
+                className={classes.inputField}
+                variant='outlined'
+              >
+                <InputLabel htmlFor='outlined-adornment-amount'>
+                  {type === 'employees' || type === 'payments'
+                    ? 'Salary'
+                    : 'Amount'}
+                </InputLabel>
+                <OutlinedInput
+                  error={!validate.amount.isValid}
+                  id='outlined-adornment-amount'
+                  value={formData.amount ? formData.amount : ''}
+                  onChange={onChange}
+                  name='amount'
+                  readOnly={type === 'payments' ? true : false}
+                  startAdornment={
+                    <InputAdornment position='start'>&#8377;</InputAdornment>
+                  }
+                  labelWidth={50}
+                />
+                <FormHelperText error id='outlined-weight-helper-text'>
+                  {validate.amount.errorMsg}
+                </FormHelperText>
+              </FormControl>
+            )}
+
+            {/* Advance payment */}
+            {['payments'].includes(type) && (
+              <FormControl
+                fullWidth
+                className={classes.inputField}
+                variant='outlined'
+              >
+                <InputLabel htmlFor='outlined-adornment-amount'>
+                  {'Advance'}
+                </InputLabel>
+                <OutlinedInput
+                  error={!validate.advance.isValid}
+                  id='outlined-adornment-advance'
+                  value={formData.advance ? formData.advance : ''}
+                  onChange={onChange}
+                  name='advance'
+                  startAdornment={
+                    <InputAdornment position='start'>&#8377;</InputAdornment>
+                  }
+                  labelWidth={60}
+                />
+                <FormHelperText error id='outlined-weight-helper-text'>
+                  {validate.advance.errorMsg}
+                </FormHelperText>
               </FormControl>
             )}
           </Grid>
@@ -987,13 +1095,12 @@ const Input = () => {
 
             {/* error msg on submit */}
             <FormHelperText error id='outlined-weight-helper-text'>
-              {!validate.containerType.isValid
-                ? validate.containerType.errorMsg
-                : ''}
+              {!validate.container.isValid ? validate.container.errorMsg : ''}
               {!validate.expenseType.isValid
                 ? validate.expenseType.errorMsg
                 : ''}
               {!validate.all.isValid ? validate.all.errorMsg : ''}
+              {!validate.clearPrev.isValid ? validate.clearPrev.errorMsg : ''}
             </FormHelperText>
 
             {/* buy or sell */}
@@ -1019,6 +1126,61 @@ const Input = () => {
                     value='sell'
                     control={<Radio color='primary' />}
                     label='Sell'
+                  />
+                </RadioGroup>
+              )}
+
+              {/* employee active & deactive */}
+              {['employees'].includes(type) && (
+                <RadioGroup
+                  className={classes.radioContainer}
+                  row
+                  onChange={onChange}
+                  aria-label='position'
+                  name='active'
+                  // defaultValue={'buy'}
+                  value={
+                    formData.active == 'true' || formData.active === true
+                      ? true
+                      : false
+                  }
+                >
+                  <FormControlLabel
+                    className={classes.radio}
+                    value={true}
+                    control={<Radio color='primary' />}
+                    label='Active'
+                  />
+                  <FormControlLabel
+                    className={classes.radio}
+                    value={false}
+                    control={<Radio />}
+                    label='Deactive'
+                  />
+                </RadioGroup>
+              )}
+
+              {/* employee type daily or monthly */}
+              {['employees'].includes(type) && (
+                <RadioGroup
+                  className={classes.radioContainer}
+                  row
+                  onChange={onChange}
+                  aria-label='position'
+                  name='employeeType'
+                  value={formData.employeeType}
+                >
+                  <FormControlLabel
+                    className={classes.radio}
+                    value={'daily'}
+                    control={<Radio color='primary' />}
+                    label='Daily'
+                  />
+                  <FormControlLabel
+                    className={classes.radio}
+                    value={'monthly'}
+                    control={<Radio color='primary' />}
+                    label='Monthly'
                   />
                 </RadioGroup>
               )}

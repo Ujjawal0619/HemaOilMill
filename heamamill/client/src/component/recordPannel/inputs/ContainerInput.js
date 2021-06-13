@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
@@ -25,9 +25,24 @@ const useStyles = makeStyles((theme) => ({
 
 const ContainerInput = (props) => {
   const classes = useStyles();
-  const { trigger, containersCount } = props;
+  const { trigger, count } = props;
+
+  const [box, setBox] = useState(count);
+
+  useEffect(() => {
+    console.log('run1');
+    trigger(box);
+  }, [box]);
+
+  useEffect(() => {
+    if (box.fifteen === 0 && box.ten === 0 && box.five === 0) {
+      console.log('run2');
+      setBox(count);
+    }
+  }, [count]);
+
   const onChange = (e) => {
-    trigger(e.target);
+    setBox({ ...box, [e.target.name]: e.target.value });
   };
 
   return (
@@ -40,7 +55,7 @@ const ContainerInput = (props) => {
               id='standard-number'
               label='15 kg'
               name='fifteen'
-              value={containersCount.fifteen}
+              value={count.fifteen}
               onChange={onChange}
               type='number'
               InputLabelProps={{
@@ -53,7 +68,7 @@ const ContainerInput = (props) => {
               id='standard-number'
               label='10 kg'
               name='ten'
-              value={containersCount.ten}
+              value={count.ten}
               onChange={onChange}
               type='number'
               InputLabelProps={{
@@ -66,7 +81,7 @@ const ContainerInput = (props) => {
               id='standard-number'
               label='5 kg'
               name='five'
-              value={containersCount.five}
+              value={count.five}
               onChange={onChange}
               type='number'
               InputLabelProps={{

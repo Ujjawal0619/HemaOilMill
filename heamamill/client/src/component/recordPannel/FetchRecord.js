@@ -9,18 +9,35 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import RecordContext from '../../context/record/recordContext';
 import InputContext from '../../context/input/inputContext';
+import PaymentCalenderContext from '../../context/paymentCalender/paymentCalenderContext';
+import EmployeeListContext from '../../context/employeeList/employeeListContext';
 import Button from '@material-ui/core/Button';
 
 const FetchRecord = () => {
   const recordContext = useContext(RecordContext);
   const inputContext = useContext(InputContext);
-  const { records, getRecords, loadInputForm, deleteRecord, trigger } =
-    recordContext;
+  const paymentCalenderContext = useContext(PaymentCalenderContext);
+  const {
+    records,
+    getRecords,
+    loadInputForm,
+    deleteRecord,
+    trigger,
+    setPaymentToRecord,
+  } = recordContext;
+  const employeeListContext = useContext(EmployeeListContext);
   const { type } = inputContext;
+  const { employeeId, payments, loadPayments, deletePayment } =
+    paymentCalenderContext;
+  const { currentImp } = employeeListContext;
 
   useEffect(() => {
-    getRecords(type);
-  }, [type, trigger]);
+    if (type === 'payments') {
+      if (payments) setPaymentToRecord(payments);
+    } else {
+      getRecords(type);
+    }
+  }, [type, trigger, payments]);
 
   const useStyles = makeStyles(() => ({
     dataBox: {
@@ -71,8 +88,13 @@ const FetchRecord = () => {
   };
 
   const onDelete = (e) => {
-    deleteRecord(type, e.currentTarget.value);
+    if (type === 'payments') {
+      deletePayment(e.currentTarget.value);
+    } else {
+      deleteRecord(type, e.currentTarget.value);
+    }
     e.disable = true;
+
     // clearRecords();
     // fetch updated reocrd (inside input.js according to type)
   };
@@ -110,15 +132,13 @@ const FetchRecord = () => {
                   ) : (
                     ''
                   )}
-                  <TableCell align='center'>{'Update'}</TableCell>
-                  <TableCell align='center'>{'Delete'}</TableCell>
                 </TableRow>
               </TableHead>
 
               <TableBody>
                 {records &&
-                  records.map((obj) => (
-                    <TableRow>
+                  records.map((obj, index) => (
+                    <TableRow key={obj._id}>
                       <TableCell>{obj.date && formateDate(obj.date)}</TableCell>
                       <TableCell>{obj.name && obj.name}</TableCell>
                       <TableCell>
@@ -164,27 +184,32 @@ const FetchRecord = () => {
                       ) : (
                         ''
                       )}
-                      <TableCell align='center'>
-                        <Button
-                          value={obj.id}
-                          variant='contained'
-                          onClick={update}
-                          className={classes.btn}
-                        >
-                          Edit
-                        </Button>
-                      </TableCell>
-                      <TableCell align='center'>
-                        <Button
-                          variant='contained'
-                          color='secondary'
-                          value={obj.id}
-                          onClick={onDelete}
-                          className={classes.btn}
-                        >
-                          Delete
-                        </Button>
-                      </TableCell>
+                      {((type === 'payments' && index === 0) ||
+                        type !== 'payments') && (
+                        <TableCell align='center'>
+                          <Button
+                            value={obj._id}
+                            variant='contained'
+                            onClick={update}
+                            className={classes.btn}
+                          >
+                            Edit
+                          </Button>
+                        </TableCell>
+                      )}
+                      {type !== 'payments' && (
+                        <TableCell align='center'>
+                          <Button
+                            variant='contained'
+                            color='secondary'
+                            value={obj._id}
+                            onClick={onDelete}
+                            className={classes.btn}
+                          >
+                            Delete
+                          </Button>
+                        </TableCell>
+                      )}
                     </TableRow>
                   ))}
               </TableBody>

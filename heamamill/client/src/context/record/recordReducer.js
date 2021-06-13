@@ -17,7 +17,7 @@ export default (state, action) => {
       return {
         ...state,
         records: state.records?.filter(
-          (record) => record.id !== action.payload
+          (record) => record._id !== action.payload
         ),
         trigger: !state.trigger,
       };
@@ -31,7 +31,7 @@ export default (state, action) => {
       return {
         ...state,
         loadInput: state.records.filter((record) => {
-          return record.id == action.payload;
+          return record._id == action.payload;
         })[0],
         trigger: !state.trigger,
       };

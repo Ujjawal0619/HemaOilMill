@@ -30,9 +30,7 @@ const AuthState = (props) => {
       setAuthToken(localStorage.token);
     }
     try {
-      const res = await axios.post('/api/verifytoken', {
-        token: localStorage.token,
-      });
+      const res = await axios.get('/api/auth');
 
       dispatch({ type: USER_LOADED, payload: res.data });
     } catch (err) {
@@ -42,21 +40,15 @@ const AuthState = (props) => {
 
   // Login User
   const login = async (formData) => {
-    // const config = {
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    // };
     try {
-      const res = await axios.post('/api/gettoken', formData);
+      const res = await axios.post('/api/auth', formData);
       dispatch({
         type: LOGIN_SUCCESS,
-        payload: res,
+        payload: res.data,
       });
       loadUser();
     } catch (err) {
       console.log(err.response.data);
-
       dispatch({
         type: LOGIN_FAIL,
         payload: err.response.data.msg,

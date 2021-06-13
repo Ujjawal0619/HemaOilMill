@@ -16,13 +16,10 @@ export default (state, action) => {
         user: action.payload,
       };
     case LOGIN_SUCCESS:
-      localStorage.setItem('token', action.payload.data.access);
+      localStorage.setItem('token', action.payload.token);
       return {
         ...state,
-        token: action.payloadaccess,
-        isAuthenticated: true,
-        loading: false,
-        user: 'shakti',
+        token: action.payload,
       };
     case AUTH_ERROR:
     case LOGIN_FAIL:

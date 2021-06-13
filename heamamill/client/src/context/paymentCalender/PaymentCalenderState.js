@@ -3,46 +3,78 @@ import axios from 'axios';
 import PaymentCalenderContext from './paymentCalenderContext';
 import paymentCalenderReducer from './paymentCalenderReducer';
 
-import { AUTH_ERROR, EMP_LOADED } from '../types';
+import {
+  LOAD_PAYMENTS,
+  DELETE_RECORD,
+  CLEAR_LOAD_INPUT,
+  CLEAR_CALENDER,
+} from '../types';
 
 const PaymentCalenderState = (props) => {
   const initialState = {
-    employee: null,
+    employeeId: null,
+    payments: null,
     loading: true,
     error: null,
   };
 
   const [state, dispatch] = useReducer(paymentCalenderReducer, initialState);
 
-  const loadEmployee = async () => {
-    const accessToken = localStorage.getItem('token');
+  const loadPayments = async (id) => {
     try {
-      axios.interceptors.request.use(
-        (config) => {
-          config.headers.authorization = `Bearer ${accessToken}`;
-          return config;
-        },
-        (err) => {
-          return Promise.reject(err);
-        }
-      );
-
-      const payment = axios.get(`/api/payments/${id}`);
-      const emp = axios.get(`/api/employee/${id}`);
-
-      dispatch({ type: EMP_LOADED, payload: res.data });
+      const res = await axios.get(`/api/payments/${id}`);
+      dispatch({ type: LOAD_PAYMENTS, payload: { data: res.data, id } });
     } catch (err) {
       console.log(err);
     }
   };
 
+  const postPayment = async (newPayment) => {
+    try {
+      const res = await axios.post(
+        `/api/payments/${state.employeeId}`,
+        newPayment
+      );
+      loadPayments(state.employeeId);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const updatePayment = async (formData) => {
+    try {
+      const res = await axios.put(`/api/payments/${formData._id}`, formData);
+      loadPayments(state.employeeId);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const deletePayment = async (id) => {
+    try {
+      await axios.delete(`/api/payments/${id}`);
+      dispatch({ type: DELETE_RECORD, payload: id });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const clearCalender = () => {
+    dispatch({ type: CLEAR_CALENDER });
+  };
+
   return (
     <PaymentCalenderContext.Provider
       value={{
-        employee: state.employee,
+        employeeId: state.employeeId,
+        payments: state.payments,
         loading: state.loading,
         error: state.error,
-        loadEmployee,
+        loadPayments,
+        deletePayment,
+        postPayment,
+        updatePayment,
+        clearCalender,
       }}
     >
       {props.children}

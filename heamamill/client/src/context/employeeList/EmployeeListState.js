@@ -3,7 +3,7 @@ import axios from 'axios';
 import EmployeeListContext from './employeeListContext';
 import employeeListReducer from './employeeListReducer';
 
-import { EMP_LOADED, SET_EMP } from '../types';
+import { EMP_LOADED, SET_EMP, SET_CURR_EMP } from '../types';
 
 const EmployeeListState = (props) => {
   const initialState = {
@@ -15,8 +15,6 @@ const EmployeeListState = (props) => {
 
   const [state, dispatch] = useReducer(employeeListReducer, initialState);
 
-  const accessToken = localStorage.getItem('token');
-
   const loadEmployees = async () => {
     try {
       const res = await axios.get(`/api/employees`);
@@ -27,22 +25,29 @@ const EmployeeListState = (props) => {
   };
 
   const setEmp = async (id) => {
+    // load an emp
     try {
-      const res = axios.get(`/api/employees/${id}`);
-      dispatch({ type: SET_EMP, payload: res.data });
+      dispatch({ type: SET_EMP, payload: id });
     } catch (err) {
       console.log(err);
     }
+  };
+
+  const setCurrentEmp = (data) => {
+    // update currentEmp
+    dispatch({ type: SET_CURR_EMP, payload: data });
   };
 
   return (
     <EmployeeListContext.Provider
       value={{
         employees: state.employees,
+        currentEmp: state.currentEmp,
         loading: state.loading,
         error: state.error,
         loadEmployees,
         setEmp,
+        setCurrentEmp,
       }}
     >
       {props.children}

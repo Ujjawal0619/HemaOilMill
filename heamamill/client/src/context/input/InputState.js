@@ -21,7 +21,7 @@ const InputState = (props) => {
   const postInput = async (formData, type) => {
     console.log(formData);
     try {
-      const res = await axios.post(`/api/${type}/`, formData);
+      const res = await axios.post(`/api/${type}`, formData);
       dispatch({ type: DATA_SENT, payload: res.data });
     } catch (err) {
       console.log(err);
@@ -31,7 +31,7 @@ const InputState = (props) => {
   // Upadat
   const updateInput = async (formData, type) => {
     try {
-      const res = await axios.put(`/api/${type}/${formData.id}/`, formData);
+      const res = await axios.put(`/api/${type}/${formData._id}`, formData);
       dispatch({ type: DATA_SENT, payload: res.data });
     } catch (err) {
       console.log(err);

@@ -66,11 +66,11 @@ const useStyles = makeStyles((theme) => ({
 export default function Login(props) {
   const classes = useStyles();
   const [user, setUser] = useState({
-    username: '',
+    email: '',
     password: '',
   });
 
-  const { username, password } = user;
+  const { email, password } = user;
   const authContext = useContext(AuthContext);
   const { login, error, isAuthenticated } = authContext;
 
@@ -92,12 +92,12 @@ export default function Login(props) {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    if (username === '' || password === '') {
-      console.log('username, password error during login');
+    if (email === '' || password === '') {
+      console.log('email, password error during login');
       // setAlert('Please fill all fields', 'danger');
     } else {
       login({
-        username,
+        email,
         password,
       });
     }
@@ -126,7 +126,7 @@ export default function Login(props) {
               fullWidth
               id='email'
               label='Email Address'
-              name='username'
+              name='email'
               autoComplete='email'
               onChange={onChange}
               autoFocus

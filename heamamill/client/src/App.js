@@ -7,24 +7,27 @@ import AuthState from './context/auth/AuthState';
 import InputState from './context/input/InputState';
 import RecordState from './context/record/RecordState';
 import EmployeeListState from './context/employeeList/EmployeeListState';
+import PaymentCalenderState from './context/paymentCalender/PaymentCalenderState';
 import PrivateRoute from './component/routing/PrivateRoute';
 
 function App() {
   return (
     <AuthState>
       <EmployeeListState>
-        <RecordState>
-          <InputState>
-            <>
-              <Router>
-                <Switch>
-                  <PrivateRoute exact path='/' component={Dashboard} />
-                  <Route exact path='/login' component={Login} />
-                </Switch>
-              </Router>
-            </>
-          </InputState>
-        </RecordState>
+        <PaymentCalenderState>
+          <RecordState>
+            <InputState>
+              <>
+                <Router>
+                  <Switch>
+                    <PrivateRoute exact path='/' component={Dashboard} />
+                    <Route exact path='/login' component={Login} />
+                  </Switch>
+                </Router>
+              </>
+            </InputState>
+          </RecordState>
+        </PaymentCalenderState>
       </EmployeeListState>
     </AuthState>
   );

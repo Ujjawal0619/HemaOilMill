@@ -29,7 +29,6 @@ const RecordState = (props) => {
       dispatch({ type: LOAD_RECORD, payload: res.data });
     } catch (err) {
       localStorage.removeItem('token');
-      console.log(err.response.data);
     }
   };
 
@@ -41,7 +40,7 @@ const RecordState = (props) => {
     if (id) {
       dispatch({ type: UPDATE, payload: id });
     } else {
-      console.log('update id is not valid');
+      console.log('update id is null valid');
     }
   };
 
@@ -59,6 +58,16 @@ const RecordState = (props) => {
     }
   };
 
+  const setPaymentToRecord = (payments) => {
+    if (payments) {
+      dispatch({ type: LOAD_RECORD, payload: payments });
+    } else {
+      console.log(
+        'do not get payment in RecordState from paymentCalenderState'
+      );
+    }
+  };
+
   return (
     <RecordContext.Provider
       value={{
@@ -70,6 +79,7 @@ const RecordState = (props) => {
         loadInputForm,
         clearLoadInput,
         deleteRecord,
+        setPaymentToRecord,
       }}
     >
       {props.children}

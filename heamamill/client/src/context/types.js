@@ -14,3 +14,6 @@ export const SET_EMP = 'SET_EMP';
 export const UPDATE = 'UPDATE';
 export const CLEAR_LOAD_INPUT = 'CLEAR_LOAD_INPUT';
 export const DELETE_RECORD = 'DELETE_RECORD';
+export const LOAD_PAYMENTS = 'LOAD_PAYMENTS';
+export const SET_CURR_EMP = 'SET_CURR_EMP';
+export const CLEAR_CALENDER = 'CLEAR_CALENDER';

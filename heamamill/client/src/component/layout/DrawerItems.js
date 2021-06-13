@@ -121,7 +121,7 @@ const DrawerItems = () => {
       </List>
       <Divider />
       <List>
-        <ListItem button onClick={() => handleSetType('dues')}>
+        <ListItem button onClick={() => handleSetType('transactions')}>
           <ListItemIcon>
             <GiIcons.GiMoneyStack size='25px' />
           </ListItemIcon>

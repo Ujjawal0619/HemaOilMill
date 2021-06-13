@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import PaymentCalenderContext from '../../context/paymentCalender/paymentCalenderContext';
+import EmployeeListContext from '../../context/employeeList/employeeListContext';
 
 const BorderLinearProgress = withStyles((theme) => ({
   root: {
@@ -98,6 +101,9 @@ const useStyles = makeStyles({
     display: 'flex',
     flexWrap: 'wrap',
     padding: '1rem',
+    borderRadius: '10px',
+    marginBottom: '1rem',
+    boxShadow: '0px 0px 10px 0px #4b9bff9e',
   },
   month: {
     flex: '20%',
@@ -111,6 +117,9 @@ const useStyles = makeStyles({
     fontWeight: 1000,
     color: '#888',
   },
+  amountList: {
+    padding: '2px 1px',
+  },
   cell: {
     height: '1rem',
     borderRadius: '25px',
@@ -119,6 +128,14 @@ const useStyles = makeStyles({
   MuiLinearProgressBar: {
     borderRadius: '25px',
     height: '1rem',
+  },
+  listContainer: {
+    padding: '5px',
+    borderRadius: '10px',
+    boxShadow: '0px 0px 10px 0px #4b9bff9e',
+    display: 'flex',
+    justifyContent: 'space-between',
+    padding: '10px 2rem',
   },
   advance: {
     color: '#fafafa',
@@ -134,14 +151,49 @@ const useStyles = makeStyles({
     borderRadius: '4px',
     fontWeight: '800',
   },
+  salary: {
+    color: '#fff',
+    background: '#ffc800',
+    marginLeft: '6px',
+    padding: '2px 5px',
+    borderRadius: '4px',
+    fontWeight: '800',
+  },
+  btn: {
+    float: 'right',
+    marginLeft: '1rem',
+    marginTop: '1rem',
+  },
 });
 
-export default function PaymentCalender() {
+export default function PaymentCalender(props) {
   const classes = useStyles();
-  const [prevStatus, setPrevStatus] = useState({
-    advance: 0,
-    due: 1000,
-  });
+
+  const [temp, setTemp] = useState(0);
+
+  const paymentCalenderContext = useContext(PaymentCalenderContext);
+  const employeeListContext = useContext(EmployeeListContext);
+  const { payments, loadPayments } = paymentCalenderContext;
+  const { currentEmp, setCurrentEmp } = employeeListContext;
+  const { prevStatus, setPrevStatus } = props;
+  const { advance, due, amount } = currentEmp ? currentEmp : prevStatus;
+
+  useEffect(() => {
+    if (currentEmp) {
+      setPrevStatus({ advance, due, amount });
+    }
+  }, []);
+
+  const onClick = () => {
+    setTemp(-due + advance);
+    setCurrentEmp({
+      ...currentEmp,
+      amount: amount - advance + due,
+      advance: 0,
+      due: 0,
+    });
+  };
+
   return (
     <>
       <div className={classes.root}>
@@ -157,20 +209,38 @@ export default function PaymentCalender() {
           </div>
         ))}
       </div>
-      <div style={{ marginLeft: '1.5rem' }}>
-        {prevStatus.advance !== 0 && (
-          <p>
-            Advance payment:{' '}
-            <span className={classes.advance}>{prevStatus.advance} ₹</span>
+      <div className={classes.listContainer}>
+        <div>
+          <p className={classes.amountList}>
+            adv: <span className={classes.advance}>{prevStatus.advance} ₹</span>
           </p>
-        )}
-        {prevStatus.due !== 0 && (
-          <p>
-            Due payment: <span className={classes.due}>{prevStatus.due} ₹</span>
+
+          <p className={classes.amountList}>
+            due: <span className={classes.due}>{prevStatus.due} ₹</span>
           </p>
-        )}
-        {prevStatus.advance === prevStatus.due && <p>All Clear</p>}
+
+          <p className={classes.amountList}>
+            sal: <span className={classes.salary}>{amount + temp} ₹</span>
+          </p>
+        </div>
+        <div>
+          <Button
+            variant='contained'
+            color='primary'
+            onClick={onClick}
+            className={classes.btn}
+          >
+            Clear
+          </Button>
+        </div>
       </div>
     </>
   );
 }
+
+/*
+1. payment can be edited only deletion is not allowed (but we have delete route).
+2. before any payment previours 'advance' or 'due' need to clear first, then a payment can be made.
+3. if current entry is wrong fix it immedietly.
+4. IMP: editing old payments entries will loose the current 'advand/due' status of employee.
+*/

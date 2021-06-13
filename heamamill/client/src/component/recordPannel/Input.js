@@ -108,6 +108,7 @@ const Input = () => {
     advance: 0,
     due: 0,
     amount: 0,
+    mobile: '-',
   };
 
   const validationData = {
@@ -186,8 +187,9 @@ const Input = () => {
 
   const { type, postInput, updateInput } = inputContext;
   const { loadInput, clearLoadInput, records, clearRecords } = recordContext;
-  const { postPayment, updatePayment, clearCalender } = paymentCalenderContex;
-  const { currentEmp, loadEmployees } = employeeListContext;
+  const { postPayment, updatePayment, clearCalender, employeeId } =
+    paymentCalenderContex;
+  const { currentEmp, loadEmployees, setEmp } = employeeListContext;
 
   useEffect(() => {
     if (loadInput) {
@@ -209,12 +211,6 @@ const Input = () => {
         qtl: '',
       });
       setContainer(initContainer);
-      setFormData({ ...formData, ['type']: type });
-      if (type === 'payments')
-        setFormData({
-          ...formData,
-          ['amount']: currentEmp ? currentEmp.amount : '',
-        });
     }
     setValidte(validationData);
   }, [type, loadInput, records]);
@@ -260,17 +256,16 @@ const Input = () => {
   }, [container]);
 
   useEffect(() => {
+    console.log('refresh', currentEmp);
+    if (employeeId) setEmp(employeeId);
     if (currentEmp) {
+      setCalender(currentEmp);
       setFormData({
         ...formData,
-        ['amount']: currentEmp.amount - currentEmp.advance + currentEmp.due,
-      });
-      setValidte({
-        ...validate,
-        ['clearPrev']: { isValid: true, errorMsg: '' },
+        ['amount']: currentEmp.amount + currentEmp.due - currentEmp.advance,
       });
     }
-  }, [currentEmp]);
+  }, [currentEmp, employeeId]);
 
   const onChange = (e) => {
     if (e.target.name === 'quintal' || e.target.name === 'quantity') {
@@ -460,7 +455,7 @@ const Input = () => {
             ...validate,
             ['advance']: {
               isValid: false,
-              errorMsg: 'advance amount is must',
+              errorMsg: 'advance amount required',
             },
           });
         }
@@ -513,12 +508,12 @@ const Input = () => {
         return formData.name && formData.mobile;
       case 'payments':
         return (
-          formData.amount &&
+          formData.amount >= 0 &&
           formData.advance &&
           formData.paid &&
           formData.due &&
-          !currentEmp.advance &&
-          !currentEmp.due
+          formData.amount ===
+            currentEmp.amount - currentEmp.advance + currentEmp.due
         );
       case 'cake':
         return (
@@ -560,17 +555,6 @@ const Input = () => {
             errorMsg: 'expanse type is empty',
           },
         });
-      } else if (
-        type === 'payments' &&
-        (currentEmp.advance !== 0 || currentEmp.due !== 0)
-      ) {
-        setValidte({
-          ...validate,
-          ['clearPrev']: {
-            isValid: false,
-            errorMsg: 'please clear adv and due',
-          },
-        });
       } else {
         setValidte({
           ...validate,
@@ -601,8 +585,15 @@ const Input = () => {
     });
     setContainer(initContainer);
     if (type === 'payments') {
-      setCalender(initCalender); // component leve state in input
-      clearCalender(); // clear the context state to null
+      if (currentEmp) {
+        // const id = currentEmp._id;
+        loadEmployees();
+        // setEmp(id);
+        console.log('clear & id set');
+      } else {
+        setCalender(initCalender);
+        console.log('else not set emp');
+      }
     }
   };
 

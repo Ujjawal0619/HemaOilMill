@@ -26,6 +26,7 @@ const EmployeeListState = (props) => {
 
   const setEmp = async (id) => {
     // load an emp
+    console.log('employee set', id);
     try {
       dispatch({ type: SET_EMP, payload: id });
     } catch (err) {

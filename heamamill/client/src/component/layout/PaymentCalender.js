@@ -159,10 +159,13 @@ const useStyles = makeStyles({
     borderRadius: '4px',
     fontWeight: '800',
   },
-  btn: {
-    float: 'right',
-    marginLeft: '1rem',
-    marginTop: '1rem',
+  mobile: {
+    color: '#fff',
+    background: '#3f51b5',
+    marginLeft: '6px',
+    padding: '2px 5px',
+    borderRadius: '4px',
+    fontWeight: '800',
   },
 });
 
@@ -176,23 +179,23 @@ export default function PaymentCalender(props) {
   const { payments, loadPayments } = paymentCalenderContext;
   const { currentEmp, setCurrentEmp } = employeeListContext;
   const { prevStatus, setPrevStatus } = props;
-  const { advance, due, amount } = currentEmp ? currentEmp : prevStatus;
+  const { advance, due, amount, mobile } = prevStatus;
 
-  useEffect(() => {
-    if (currentEmp) {
-      setPrevStatus({ advance, due, amount });
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (currentEmp) {
+  //     setPrevStatus({ advance, due, amount });
+  //   }
+  // }, [currentEmp]);
 
-  const onClick = () => {
-    setTemp(-due + advance);
-    setCurrentEmp({
-      ...currentEmp,
-      amount: amount - advance + due,
-      advance: 0,
-      due: 0,
-    });
-  };
+  // const onClick = () => {
+  //   setTemp(-due + advance);
+  //   setCurrentEmp({
+  //     ...currentEmp,
+  //     amount: amount - advance + due,
+  //     advance: 0,
+  //     due: 0,
+  //   });
+  // };
 
   return (
     <>
@@ -212,26 +215,29 @@ export default function PaymentCalender(props) {
       <div className={classes.listContainer}>
         <div>
           <p className={classes.amountList}>
-            adv: <span className={classes.advance}>{prevStatus.advance} ₹</span>
+            adv: <span className={classes.advance}>{advance} ₹</span>
           </p>
 
           <p className={classes.amountList}>
-            due: <span className={classes.due}>{prevStatus.due} ₹</span>
+            due: <span className={classes.due}>{due} ₹</span>
           </p>
 
           <p className={classes.amountList}>
-            sal: <span className={classes.salary}>{amount + temp} ₹</span>
+            sal: <span className={classes.salary}>{amount} ₹</span>
           </p>
         </div>
         <div>
-          <Button
+          {/* <Button
             variant='contained'
             color='primary'
             onClick={onClick}
             className={classes.btn}
           >
             Clear
-          </Button>
+          </Button> */}
+          <p className={classes.amountList}>
+            mob: <span className={classes.mobile}>{mobile}</span>
+          </p>
         </div>
       </div>
     </>

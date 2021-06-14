@@ -11,11 +11,13 @@ export default function CenteredGrid() {
 
   return (
     <Grid container spacing={2}>
-      <Fade timeout={1000} in={true}>
-        <Grid item xs={12}>
-          <Input />
-        </Grid>
-      </Fade>
+      {type !== 'transactions' && (
+        <Fade timeout={1000} in={true}>
+          <Grid item xs={12}>
+            <Input />
+          </Grid>
+        </Fade>
+      )}
       <Fade timeout={1000} in={true}>
         <Grid item xs={12}>
           <FetchRecord />

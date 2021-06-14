@@ -76,15 +76,22 @@ const FetchRecord = () => {
   }
 
   const formateDate = (date) => {
+    const options = {
+      weekday: undefined,
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    };
     let dt = new Date(date);
-    return dt.toLocaleDateString();
+
+    //return dt.toLocaleDateString("en-US"); // 9/17/2016
+    return dt.toLocaleDateString('en-US', options); // Saturday, September 17, 2016
+    // return dt.toLocaleDateString('hi-IN', options); // शनिवार, 17 सितंबर 2016
+    // return dt.toLocaleString(undefined, { timeZone: 'Asia/Kolkata' });
   };
 
   const update = (e) => {
     loadInputForm(e.currentTarget.value); // populate input
-    // PUT request (according to 'loadInput' state, PUT or POST )
-    // clear current state
-    // fetch updated record
   };
 
   const onDelete = (e) => {
@@ -94,9 +101,6 @@ const FetchRecord = () => {
       deleteRecord(type, e.currentTarget.value);
     }
     e.disable = true;
-
-    // clearRecords();
-    // fetch updated reocrd (inside input.js according to type)
   };
 
   return (
@@ -112,26 +116,22 @@ const FetchRecord = () => {
             <>
               <TableHead>
                 <TableRow>
-                  <TableCell>{head.date && 'Date'}</TableCell>
-                  <TableCell>{head.name && 'Name'}</TableCell>
-                  <TableCell>{head.joining && 'Joining'}</TableCell>
-                  <TableCell>{head.mobile && 'Mobile'}</TableCell>
-                  <TableCell>{head.quantity && 'Quantity'}</TableCell>
-                  <TableCell>{head.rate && 'Rate'}</TableCell>
-                  <TableCell>{head.transport && 'Transport'}</TableCell>
-                  <TableCell>{head.rate && head.quantity && 'Cost'}</TableCell>
-                  <TableCell>{head.containerType && 'Container'}</TableCell>
-                  <TableCell>{head.expenseType && 'Type'}</TableCell>
-                  <TableCell>{head.amount && 'Amount'}</TableCell>
-                  {type === 'dues' ? (
-                    <>
-                      <TableCell>{head.total && 'Total'}</TableCell>
-                      <TableCell>{head.paid && 'Paid'}</TableCell>
-                      <TableCell>{head.due && 'Due'}</TableCell>
-                    </>
-                  ) : (
-                    ''
+                  {head.date && <TableCell>Date</TableCell>}
+                  {head.name && <TableCell>Name</TableCell>}
+                  {head.mobile && <TableCell>Mobile</TableCell>}
+                  {head.quantity !== undefined && (
+                    <TableCell>Quantity</TableCell>
                   )}
+                  {head.rate !== undefined && <TableCell>Rate</TableCell>}
+                  {head.transport !== undefined && <TableCell>Trans</TableCell>}
+                  {head.container && <TableCell>Container</TableCell>}
+                  {head.expenseType && <TableCell>Type</TableCell>}
+                  {head.salary !== undefined && <TableCell>Salary</TableCell>}
+                  {head.amount !== undefined && <TableCell>Amount</TableCell>}
+                  {head.total !== undefined && <TableCell> Total</TableCell>}
+                  {head.paid !== undefined && <TableCell> Paid</TableCell>}
+                  {head.advance !== undefined && <TableCell> Adv</TableCell>}
+                  {head.due !== undefined && <TableCell> Due</TableCell>}
                 </TableRow>
               </TableHead>
 
@@ -139,53 +139,51 @@ const FetchRecord = () => {
                 {records &&
                   records.map((obj, index) => (
                     <TableRow key={obj._id}>
-                      <TableCell>{obj.date && formateDate(obj.date)}</TableCell>
-                      <TableCell>{obj.name && obj.name}</TableCell>
-                      <TableCell>
-                        {obj.joining && formateDate(obj.joining)}
-                      </TableCell>
-                      <TableCell>{obj.mobile && obj.mobile}</TableCell>
-                      <TableCell>{obj.quantity && obj.quantity}</TableCell>
-                      <TableCell>{obj.rate && obj.rate}</TableCell>
-                      <TableCell>{obj.transport && obj.transport}</TableCell>
-                      <TableCell>
-                        {obj.rate &&
-                          obj.quantity &&
-                          (
-                            parseFloat(obj.rate) * parseFloat(obj.quantity) +
-                            parseFloat(obj.transport)
-                          ).toFixed(2)}
-                      </TableCell>
-                      <TableCell>
-                        {obj.containerType && obj.containerType}
-                      </TableCell>
-                      <TableCell>
-                        {obj.expenseType && obj.expenseType}
-                      </TableCell>
-                      <TableCell>{obj.amount && obj.amount}</TableCell>
-                      {type === 'dues' ? (
-                        <>
-                          <TableCell>{obj.total && obj.total}</TableCell>
-                          <TableCell
-                            className={
-                              obj.total === obj.paid ? classes.noDues : ''
-                            }
-                          >
-                            {obj.paid && obj.paid}
-                          </TableCell>
-                          <TableCell
-                            className={
-                              obj.total !== obj.paid ? classes.dues : ''
-                            }
-                          >
-                            {obj.due && obj.due}
-                          </TableCell>
-                        </>
-                      ) : (
-                        ''
+                      {obj.date && (
+                        <TableCell> {formateDate(obj.date)}</TableCell>
+                      )}
+                      {obj.name && <TableCell> {obj.name}</TableCell>}
+                      {obj.mobile && <TableCell> {obj.mobile}</TableCell>}
+                      {obj.quantity !== undefined && (
+                        <TableCell> {obj.quantity}</TableCell>
+                      )}
+                      {obj.rate !== undefined && (
+                        <TableCell> {obj.rate}</TableCell>
+                      )}
+                      {obj.transport !== undefined && (
+                        <TableCell> {obj.transport}</TableCell>
+                      )}
+                      {type === 'containers' && (
+                        <TableCell>
+                          {obj.container.type && obj.container.type}
+                        </TableCell>
+                      )}
+                      {type === 'oil' && (
+                        <TableCell>
+                          {obj.container.count &&
+                            `5(${obj.container.count.five}) 10(${obj.container.count.ten}) 15(${obj.container.count.fifteen})`}
+                        </TableCell>
+                      )}
+                      {obj.expenseType && (
+                        <TableCell>{obj.expenseType}</TableCell>
+                      )}
+                      {obj.salary !== undefined && (
+                        <TableCell>{obj.salary}</TableCell>
+                      )}
+                      {obj.amount !== undefined && (
+                        <TableCell>{obj.amount}</TableCell>
+                      )}
+                      {obj.paid !== undefined && (
+                        <TableCell>{obj.paid}</TableCell>
+                      )}
+                      {obj.advance !== undefined && (
+                        <TableCell>{obj.advance}</TableCell>
+                      )}
+                      {obj.due !== undefined && (
+                        <TableCell>{obj.due}</TableCell>
                       )}
                       {((type === 'payments' && index === 0) ||
-                        type !== 'payments') && (
+                        (type !== 'payments' && type !== 'transactions')) && (
                         <TableCell align='center'>
                           <Button
                             value={obj._id}
@@ -197,7 +195,7 @@ const FetchRecord = () => {
                           </Button>
                         </TableCell>
                       )}
-                      {type !== 'payments' && (
+                      {type !== 'payments' && type !== 'transactions' && (
                         <TableCell align='center'>
                           <Button
                             variant='contained'

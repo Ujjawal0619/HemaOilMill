@@ -109,6 +109,7 @@ const Input = () => {
     due: 0,
     amount: 0,
     mobile: '-',
+    employeeType: '-',
   };
 
   const validationData = {
@@ -212,6 +213,7 @@ const Input = () => {
       });
       setContainer(initContainer);
     }
+    setFormData({ ...formData, ['type']: type });
     setValidte(validationData);
   }, [type, loadInput, records]);
 
@@ -445,7 +447,7 @@ const Input = () => {
         break;
       case 'advance':
         const advanceRegex = /^(?=.+)(?:[1-9]\d*|0)?(?:\.\d+)?$/; // positive decimal number
-        if (value.match(advanceRegex)) {
+        if (value.match(advanceRegex) && value <= currentEmp.amount) {
           setValidte({
             ...validate,
             ['advance']: { isValid: true, errorMsg: '' },
@@ -455,7 +457,7 @@ const Input = () => {
             ...validate,
             ['advance']: {
               isValid: false,
-              errorMsg: 'advance amount required',
+              errorMsg: 'advance should not exceed salary',
             },
           });
         }

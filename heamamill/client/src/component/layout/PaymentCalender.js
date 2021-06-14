@@ -176,10 +176,23 @@ export default function PaymentCalender(props) {
 
   const paymentCalenderContext = useContext(PaymentCalenderContext);
   const employeeListContext = useContext(EmployeeListContext);
-  const { payments, loadPayments } = paymentCalenderContext;
+  const { payments, loadPayments, clearCalender } = paymentCalenderContext;
   const { currentEmp, setCurrentEmp } = employeeListContext;
   const { prevStatus, setPrevStatus } = props;
-  const { advance, due, amount, mobile } = prevStatus;
+  const { advance, due, amount, mobile, employeeType } = prevStatus;
+
+  useEffect(() => {
+    return () => {
+      clearCalender();
+      setPrevStatus({
+        advance: 0,
+        due: 0,
+        amount: 0,
+        mobile: '-',
+        employeeType: '-',
+      });
+    };
+  }, []);
 
   // useEffect(() => {
   //   if (currentEmp) {
@@ -238,6 +251,9 @@ export default function PaymentCalender(props) {
           <p className={classes.amountList}>
             mob: <span className={classes.mobile}>{mobile}</span>
           </p>
+          <p className={classes.amountList}>
+            basis: <span className={classes.mobile}>{employeeType}</span>
+          </p>
         </div>
       </div>
     </>
@@ -245,8 +261,9 @@ export default function PaymentCalender(props) {
 }
 
 /*
-1. payment can be edited only deletion is not allowed (but we have delete route).
-2. before any payment previours 'advance' or 'due' need to clear first, then a payment can be made.
+1. payment can be edited only one (most recent)deletion is not allowed (but we have delete route).
+2. before any payment previours 'advance' or 'due' need to clear first (automatically added to salary while paying), then a payment can be made.
 3. if current entry is wrong fix it immedietly.
-4. IMP: editing old payments entries will loose the current 'advand/due' status of employee.
+4. Advance can not be greater than salary or corresponding employee.
+5. IMP: editing old payments entries will loose the current 'advand/due' status of employee.
 */

@@ -588,13 +588,9 @@ const Input = () => {
     setContainer(initContainer);
     if (type === 'payments') {
       if (currentEmp) {
-        // const id = currentEmp._id;
         loadEmployees();
-        // setEmp(id);
-        console.log('clear & id set');
       } else {
         setCalender(initCalender);
-        console.log('else not set emp');
       }
     }
   };

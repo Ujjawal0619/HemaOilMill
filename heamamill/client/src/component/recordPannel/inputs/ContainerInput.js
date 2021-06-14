@@ -30,13 +30,11 @@ const ContainerInput = (props) => {
   const [box, setBox] = useState(count);
 
   useEffect(() => {
-    console.log('run1');
     trigger(box);
   }, [box]);
 
   useEffect(() => {
     if (box.fifteen === 0 && box.ten === 0 && box.five === 0) {
-      console.log('run2');
       setBox(count);
     }
   }, [count]);

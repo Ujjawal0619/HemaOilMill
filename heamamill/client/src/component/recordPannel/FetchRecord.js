@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core';
+import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -39,6 +39,24 @@ const FetchRecord = () => {
     }
   }, [type, trigger, payments]);
 
+  const StyledTableCell = withStyles((theme) => ({
+    head: {
+      backgroundColor: '#3f51b5',
+      color: theme.palette.common.white,
+    },
+    body: {
+      fontSize: 14,
+    },
+  }))(TableCell);
+
+  const StyledTableRow = withStyles((theme) => ({
+    root: {
+      '&:nth-of-type(odd)': {
+        backgroundColor: theme.palette.action.hover,
+      },
+    },
+  }))(TableRow);
+
   const useStyles = makeStyles(() => ({
     dataBox: {
       borderRadius: '8px',
@@ -69,8 +87,8 @@ const FetchRecord = () => {
   }));
 
   const classes = useStyles();
-  let head = null;
 
+  let head = null;
   if (records) {
     head = records[0];
   }
@@ -106,7 +124,7 @@ const FetchRecord = () => {
   return (
     <div className={classes.dataBox}>
       <TableContainer component={Paper} className={classes.tableContainer}>
-        <Table className={classes.table} aria-label='caption table'>
+        <Table className={classes.table} aria-label='customized table'>
           <caption>
             {records
               ? `last ${records.length} records.`
@@ -116,75 +134,102 @@ const FetchRecord = () => {
             <>
               <TableHead>
                 <TableRow>
-                  {head.date && <TableCell>Date</TableCell>}
-                  {head.name && <TableCell>Name</TableCell>}
-                  {head.mobile && <TableCell>Mobile</TableCell>}
+                  {head.date && <StyledTableCell>Date</StyledTableCell>}
+                  {head.name && <StyledTableCell>Name</StyledTableCell>}
+                  {head.mobile && <StyledTableCell>Mobile</StyledTableCell>}
                   {head.quantity !== undefined && (
-                    <TableCell>Quantity</TableCell>
+                    <StyledTableCell>Quantity</StyledTableCell>
                   )}
-                  {head.rate !== undefined && <TableCell>Rate</TableCell>}
-                  {head.transport !== undefined && <TableCell>Trans</TableCell>}
-                  {head.container && <TableCell>Container</TableCell>}
-                  {head.expenseType && <TableCell>Type</TableCell>}
-                  {head.salary !== undefined && <TableCell>Salary</TableCell>}
-                  {head.amount !== undefined && <TableCell>Amount</TableCell>}
-                  {head.total !== undefined && <TableCell> Total</TableCell>}
-                  {head.paid !== undefined && <TableCell> Paid</TableCell>}
-                  {head.advance !== undefined && <TableCell> Adv</TableCell>}
-                  {head.due !== undefined && <TableCell> Due</TableCell>}
+                  {head.rate !== undefined && (
+                    <StyledTableCell>Rate</StyledTableCell>
+                  )}
+                  {head.transport !== undefined && (
+                    <StyledTableCell>Trans</StyledTableCell>
+                  )}
+                  {head.container && (
+                    <StyledTableCell>Container</StyledTableCell>
+                  )}
+                  {head.expenseType && <StyledTableCell>Type</StyledTableCell>}
+                  {head.salary !== undefined && (
+                    <StyledTableCell>Salary</StyledTableCell>
+                  )}
+                  {head.amount !== undefined && (
+                    <StyledTableCell>Amount</StyledTableCell>
+                  )}
+                  {head.total !== undefined && (
+                    <StyledTableCell> Total</StyledTableCell>
+                  )}
+                  {head.paid !== undefined && (
+                    <StyledTableCell> Paid</StyledTableCell>
+                  )}
+                  {head.advance !== undefined && (
+                    <StyledTableCell> Adv</StyledTableCell>
+                  )}
+                  {head.due !== undefined && (
+                    <StyledTableCell> Due</StyledTableCell>
+                  )}
+                  <StyledTableCell></StyledTableCell>
+                  <StyledTableCell></StyledTableCell>
                 </TableRow>
               </TableHead>
 
               <TableBody>
                 {records &&
                   records.map((obj, index) => (
-                    <TableRow key={obj._id}>
+                    <StyledTableRow key={obj._id}>
                       {obj.date && (
-                        <TableCell> {formateDate(obj.date)}</TableCell>
+                        <StyledTableCell>
+                          {' '}
+                          {formateDate(obj.date)}
+                        </StyledTableCell>
                       )}
-                      {obj.name && <TableCell> {obj.name}</TableCell>}
-                      {obj.mobile && <TableCell> {obj.mobile}</TableCell>}
+                      {obj.name && (
+                        <StyledTableCell> {obj.name}</StyledTableCell>
+                      )}
+                      {obj.mobile && (
+                        <StyledTableCell> {obj.mobile}</StyledTableCell>
+                      )}
                       {obj.quantity !== undefined && (
-                        <TableCell> {obj.quantity}</TableCell>
+                        <StyledTableCell> {obj.quantity}</StyledTableCell>
                       )}
                       {obj.rate !== undefined && (
-                        <TableCell> {obj.rate}</TableCell>
+                        <StyledTableCell> {obj.rate}</StyledTableCell>
                       )}
                       {obj.transport !== undefined && (
-                        <TableCell> {obj.transport}</TableCell>
+                        <StyledTableCell> {obj.transport}</StyledTableCell>
                       )}
                       {type === 'containers' && (
-                        <TableCell>
+                        <StyledTableCell>
                           {obj.container.type && obj.container.type}
-                        </TableCell>
+                        </StyledTableCell>
                       )}
                       {type === 'oil' && (
-                        <TableCell>
+                        <StyledTableCell>
                           {obj.container.count &&
                             `5(${obj.container.count.five}) 10(${obj.container.count.ten}) 15(${obj.container.count.fifteen})`}
-                        </TableCell>
+                        </StyledTableCell>
                       )}
                       {obj.expenseType && (
-                        <TableCell>{obj.expenseType}</TableCell>
+                        <StyledTableCell>{obj.expenseType}</StyledTableCell>
                       )}
                       {obj.salary !== undefined && (
-                        <TableCell>{obj.salary}</TableCell>
+                        <StyledTableCell>{obj.salary}</StyledTableCell>
                       )}
                       {obj.amount !== undefined && (
-                        <TableCell>{obj.amount}</TableCell>
+                        <StyledTableCell>{obj.amount}</StyledTableCell>
                       )}
                       {obj.paid !== undefined && (
-                        <TableCell>{obj.paid}</TableCell>
+                        <StyledTableCell>{obj.paid}</StyledTableCell>
                       )}
                       {obj.advance !== undefined && (
-                        <TableCell>{obj.advance}</TableCell>
+                        <StyledTableCell>{obj.advance}</StyledTableCell>
                       )}
                       {obj.due !== undefined && (
-                        <TableCell>{obj.due}</TableCell>
+                        <StyledTableCell>{obj.due}</StyledTableCell>
                       )}
                       {((type === 'payments' && index === 0) ||
                         (type !== 'payments' && type !== 'transactions')) && (
-                        <TableCell align='center'>
+                        <StyledTableCell align='center'>
                           <Button
                             value={obj._id}
                             variant='contained'
@@ -193,10 +238,10 @@ const FetchRecord = () => {
                           >
                             Edit
                           </Button>
-                        </TableCell>
+                        </StyledTableCell>
                       )}
                       {type !== 'payments' && type !== 'transactions' && (
-                        <TableCell align='center'>
+                        <StyledTableCell align='center'>
                           <Button
                             variant='contained'
                             color='secondary'
@@ -206,17 +251,17 @@ const FetchRecord = () => {
                           >
                             Delete
                           </Button>
-                        </TableCell>
+                        </StyledTableCell>
                       )}
-                    </TableRow>
+                    </StyledTableRow>
                   ))}
               </TableBody>
             </>
           ) : (
             <TableHead>
-              <TableRow>
-                <TableCell>No Data To Show!</TableCell>
-              </TableRow>
+              <StyledTableRow>
+                <StyledTableCell>No Data To Show!</StyledTableCell>
+              </StyledTableRow>
             </TableHead>
           )}
         </Table>
